@@ -1,16 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { NavigationContainer } from '@react-navigation/native'
-import { AuthStack } from './StackNavigation'
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { AuthStack, HomeStack } from './StackNavigation';
 
 const MainNavigation = () => {
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+
   return (
-    <NavigationContainer>
-        <AuthStack/>
-    </NavigationContainer>
-  )
-}
+<>
+      {isLoggedIn ? <HomeStack /> : <AuthStack />}
+      </>
+  );
+};
 
-export default MainNavigation
-
-const styles = StyleSheet.create({})
+export default MainNavigation;

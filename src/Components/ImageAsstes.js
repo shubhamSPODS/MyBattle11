@@ -12,6 +12,8 @@ export const REFER = require('../assets/Images/refer.png')
 export const WINNERS = require('../assets/Images/winners.png')
 export const LUDO_BANNER = require('../assets/Images/Ludo.png')
 export const FANTASY_BANNER = require('../assets/Images/FantasyBanner.png')
+export const RUMMY_BANNER = require('../assets/Images/Rummy.png')
+
 
 
 

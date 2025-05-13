@@ -15,7 +15,23 @@ export const AuthStack =()=>{
         }}>
         <Stack.Screen name='Login' component={Login}></Stack.Screen>
         <Stack.Screen name='Otp' component={Otp}></Stack.Screen>
+        </Stack.Navigator>
+
+     )
+     
+}
+
+
+export const HomeStack =()=>{
+
+     
+    const Stack = createNativeStackNavigator();
+     return(
+        <Stack.Navigator initialRouteName='HomeScreen' screenOptions={{
+            headerShown:false
+        }}>
         <Stack.Screen name='HomeScreen' component={HomeScreen}></Stack.Screen>
+      
         </Stack.Navigator>
 
      )

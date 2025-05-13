@@ -1,11 +1,14 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { BACK, BELL, MYBATTLE11, USER_IMG, WALLET } from './ImageAsstes';
 import Icon from './Icon';
 import Typography from './Typography';
 import { MEDIUM, REGULAR } from './AppFonts';
+import { useDispatch } from 'react-redux';
+import { logout } from '../Redux/Slice';
 
 const HomeHeader = ({ user }) => {
+    const disptach = useDispatch()
     return (
         <View style={styles.container}>
 
@@ -14,26 +17,28 @@ const HomeHeader = ({ user }) => {
                     size={50}
                     source={USER_IMG}
                 />
-                <View style={{marginLeft:5}}>
-                    <Text style={{fontFamily:MEDIUM,fontSize:12}}>Jhon Doe</Text>
-                    <Text style={{fontFamily:REGULAR,fontSize:10}}>ID: #1234</Text>
+                <View style={{ marginLeft: 5 }}>
+                    <Text style={{ fontFamily: MEDIUM, fontSize: 12 }}>Jhon Doe</Text>
+                    <Text style={{ fontFamily: REGULAR, fontSize: 10 }}>ID: #1234</Text>
                 </View>
             </View>
 
             <Icon
-                    size={100}
-                    source={MYBATTLE11}
-                    style={{top:5}}
-                />
-                  <View style={styles.icons}>
-                <TouchableOpacity>
-                    <Icon source={BELL} size={35}  />
+                size={100}
+                source={MYBATTLE11}
+                style={{ top: 5 }}
+            />
+            <View style={styles.icons}>
+                <TouchableOpacity onPress={(() => {
+                 
+                })}>
+                    <Icon source={BELL} size={35} />
                 </TouchableOpacity>
                 <TouchableOpacity style={{ marginLeft: 10 }}>
-                <Icon source={WALLET} size={35}  />
+                    <Icon source={WALLET} size={35} />
                 </TouchableOpacity>
-            </View> 
-           
+            </View>
+
         </View>
     );
 };
@@ -46,7 +51,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: '#fff',
-        paddingHorizontal:5,
+        paddingHorizontal: 5,
     },
     userInfo: {
         flexDirection: 'row',

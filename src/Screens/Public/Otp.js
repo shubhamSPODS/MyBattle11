@@ -8,11 +8,17 @@ import { useNavigation } from '@react-navigation/native'
 import Typography, { FULL_WIDTH } from '../../Components/Typography'
 import OTPTextView from 'react-native-otp-textinput'
 import CommonButton, { CommonRedButton } from '../../Components/CommonButton'
+import { useDispatch } from 'react-redux'
+import { login } from '../../Redux/Slice'
 
 const Otp = () => {
   const navigation = useNavigation()
   const otpRef = useRef(null);
+  const dispatch = useDispatch();
 
+  const handleLogin = () => {
+    dispatch(login({name: 'Shubham', lastname: 'Singh'}));
+  };
   return (
     <View style={{ flex: 1 }}>
       <ImageContainer>
@@ -52,7 +58,7 @@ const Otp = () => {
           <Typography color={WHITE} style={{ marginTop: 10 }} >Didn't receive code?<Typography color={DARK_RED}> Resend</Typography></Typography>
           <CommonRedButton
           onPress={()=>{
-            navigation.navigate('HomeScreen')
+          handleLogin()
           }}
             style={{ marginTop: 30 }}
             title={'Verify'}
