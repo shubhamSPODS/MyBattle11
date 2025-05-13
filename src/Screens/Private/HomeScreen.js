@@ -1,7 +1,7 @@
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import HomeHeader from '../../Components/HomeHeader'
-import { BLACK, LIGHT_PURPLE, WHITE } from '../../Components/Colors'
+import { BLACK, LIGHT_PURPLE, LINEAR_DARK_PURPLE, LINEAR_LIGHT_PURPLE, WHITE } from '../../Components/Colors'
 import Icon from '../../Components/Icon'
 import Typography, { FULL_WIDTH } from '../../Components/Typography'
 import { ADD, BACK, BANNER, FANTASY_BANNER, LUDO_BANNER, REFER, REWARDS, RUMMY_BANNER, WINNERS } from '../../Components/ImageAsstes'
@@ -20,7 +20,7 @@ const HomeScreen = () => {
          <ScrollView>
             <Image
                 source={BANNER}
-                style={{ width: FULL_WIDTH - 50, alignSelf: "center", height: 180, }}
+                style={{ width: FULL_WIDTH - 50, alignSelf: "center", height: 180, marginTop:10}}
             />
             <View>
                 <FlatList
@@ -45,7 +45,7 @@ const HomeScreen = () => {
                             }}
                         >
                             <LinearGradient
-                                colors={['#6412AB', '#461276']}
+                                colors={[LINEAR_LIGHT_PURPLE, LINEAR_DARK_PURPLE]}
                                 style={{
                                     alignItems: "center",
                                     justifyContent: "center",

@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Login from '../Screens/Public/Login';
 import Otp from '../Screens/Public/Otp';
 import HomeScreen from '../Screens/Private/HomeScreen';
+import TabNavigation from './TabNavigation';
 
 export const AuthStack =()=>{
 
@@ -27,10 +28,10 @@ export const HomeStack =()=>{
      
     const Stack = createNativeStackNavigator();
      return(
-        <Stack.Navigator initialRouteName='HomeScreen' screenOptions={{
+        <Stack.Navigator initialRouteName='Tabs' screenOptions={{
             headerShown:false
         }}>
-        <Stack.Screen name='HomeScreen' component={HomeScreen}></Stack.Screen>
+          <Stack.Screen name="Tabs" component={TabNavigation} />
       
         </Stack.Navigator>
 

@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#fff',
         paddingHorizontal: 5,
+        elevation:0.5,
     },
     userInfo: {
         flexDirection: 'row',
