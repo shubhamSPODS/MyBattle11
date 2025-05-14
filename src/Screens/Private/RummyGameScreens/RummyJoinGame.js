@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
   joinButton: {
     backgroundColor: DARK_PURPLE,
     width: '100%',
-    bottom:10
+    bottom:10,
+    left:0
   },
 }) 
