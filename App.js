@@ -4,11 +4,13 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './src/Redux/store';
 import MainNavigation from './src/Navigation/MainNavigation';
 import { NavigationContainer } from '@react-navigation/native';
+import { StatusBar } from 'react-native';
 
 const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
+        
         <NavigationContainer>
         <MainNavigation />
         </NavigationContainer>

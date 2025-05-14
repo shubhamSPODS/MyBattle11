@@ -18,6 +18,18 @@ export const SETTING = require('../assets/Images/setting.png')
 export const PROFILE = require('../assets/Images/profile.png')
 export const HISTORY = require('../assets/Images/history.png')
 export const WITHDRAW = require('../assets/Images/withdraw.png')
+export const PROFILE2 = require('../assets/Images/profile2.png')
+export const WATCH = require('../assets/Images/watch.png')
+export const SECURE = require('../assets/Images/secure.png')
+export const PRIZE = require('../assets/Images/prize.png')
+export const POOL = require('../assets/Images/pool.png')
+export const FEE = require('../assets/Images/fee.png')
+export const CHECK = require('../assets/Images/check.png')
+
+
+
+
+
 
 
 

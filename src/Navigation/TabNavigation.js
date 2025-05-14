@@ -89,8 +89,6 @@ const TabNavigation = () => {
             <Tab.Screen name="Wallet" component={Wallet} />
             <Tab.Screen name="Setting" component={Setting} />
             <Tab.Screen name="Profile" component={Profile} />
-            
-        
         </Tab.Navigator>
     );
 };

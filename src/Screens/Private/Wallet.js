@@ -73,7 +73,6 @@ const Wallet = () => {
                             }}
                         >
                             <View
-                              
                                 style={{
                                     alignItems: "center",
                                     justifyContent: "center",
