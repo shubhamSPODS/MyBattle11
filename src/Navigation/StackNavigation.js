@@ -46,10 +46,6 @@ export const HomeStack = () => {
             <Stack.Screen name="RummyPoolTables" component={RummyPoolTables} />
             <Stack.Screen name="RummyJoinGame" component={RummyJoinGame} />
 
-
-            
-            
-
         </Stack.Navigator>
 
     )

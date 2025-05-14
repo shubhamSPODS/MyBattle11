@@ -25,6 +25,17 @@ export const PRIZE = require('../assets/Images/prize.png')
 export const POOL = require('../assets/Images/pool.png')
 export const FEE = require('../assets/Images/fee.png')
 export const CHECK = require('../assets/Images/check.png')
+export const EARN = require('../assets/Images/earn.png')
+export const COPY_LINK = require('../assets/Images/copyLink.png')
+export const SHARE = require('../assets/Images/share.png')
+export const WHTASAPP = require('../assets/Images/whatsapp.png')
+export const  EMAIL= require('../assets/Images/email.png')
+export const  TELEGRAM= require('../assets/Images/telegram.png')
+
+
+
+
+
 
 
 

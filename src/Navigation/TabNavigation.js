@@ -6,10 +6,11 @@ import Typography from '../Components/Typography';
 import { MEDIUM } from '../Components/AppFonts';
 import { BLACK, DARK_PURPLE, LIGHT_PURPLE, WHITE } from '../Components/Colors';
 import Icon from '../Components/Icon';
-import { BACK, HOME, PROFILE, SETTING, WALLET } from '../Components/ImageAsstes';
+import { BACK, EARN, HOME, PROFILE, SETTING, WALLET } from '../Components/ImageAsstes';
 import Wallet from '../Screens/Private/Wallet';
 import Setting from '../Screens/Private/Setting';
 import Profile from '../Screens/Private/Profile';
+import ReferAndEarn from '../Screens/Private/ReferAndEarn';
 
 
 const Tab = createBottomTabNavigator();
@@ -34,8 +35,8 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
                     case 'Wallet':
                         iconSource = WALLET;
                         break;
-                    case 'Setting':
-                        iconSource = SETTING;
+                    case 'Earn & referral':
+                        iconSource = EARN;
                         break;
                     case 'Profile':
                         iconSource = PROFILE;
@@ -87,7 +88,7 @@ const TabNavigation = () => {
             screenOptions={{ headerShown: false }}>
             <Tab.Screen name="HomeScreen" component={HomeScreen} />
             <Tab.Screen name="Wallet" component={Wallet} />
-            <Tab.Screen name="Setting" component={Setting} />
+            <Tab.Screen name="Earn & referral" component={ReferAndEarn} />
             <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
     );
