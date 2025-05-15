@@ -140,8 +140,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: WHITE,
     },
-  
-    
+
+
     rewardCard: {
         backgroundColor: '#5C2D91',
         margin: 16,
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
         fontFamily: MEDIUM
     },
     copyButton: {
-        backgroundColor: '#5C2D91',
+        backgroundColor: DARK_PURPLE,
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 6,
@@ -201,7 +201,10 @@ const styles = StyleSheet.create({
     },
     shareButton: {
         alignItems: 'center',
-        width: 40, height: 40, borderRadius: 20, backgroundColor: DARK_PURPLE,
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: DARK_PURPLE,
         justifyContent: 'center'
     },
     shareButtonText: {
@@ -210,9 +213,9 @@ const styles = StyleSheet.create({
     },
     statsContainer: {
         borderRadius: 12,
-        width:FULL_WIDTH-40,
-        alignSelf:'center',
-        padding:10
+        width: FULL_WIDTH - 40,
+        alignSelf: 'center',
+        padding: 10
     },
     statsTitle: {
         fontSize: 16,

@@ -31,6 +31,20 @@ export const SHARE = require('../assets/Images/share.png')
 export const WHTASAPP = require('../assets/Images/whatsapp.png')
 export const  EMAIL= require('../assets/Images/email.png')
 export const  TELEGRAM= require('../assets/Images/telegram.png')
+export const  NEXT= require('../assets/Images/next.png')
+export const CHANGE_PASSWORD = require('../assets/Images/ChangePassword.png')
+export const BANK = require('../assets/Images/Bank.png')
+export const UPDATE = require('../assets/Images/Update.png')
+export const LANGUAGE = require('../assets/Images/Language.png')
+export const NOTIFICATION = require('../assets/Images/Notification.png')
+export const HELP = require('../assets/Images/Help.png')
+export const CONTACT = require('../assets/Images/Contact.png')
+export const TERMS = require('../assets/Images/Term.png')
+export const PRIVACY = require('../assets/Images/Privacy.png')
+export const VERSION = require('../assets/Images/Info.png')
+
+
+
 
 
 

@@ -11,6 +11,7 @@ import LudoJoinTable from '../Screens/Private/LudoGameScreens/LudoJoinTable';
 import RummyGameMode from '../Screens/Private/RummyGameScreens/RummyGameMode';
 import RummyPoolTables from '../Screens/Private/RummyGameScreens/RummyPoolTables';
 import RummyJoinGame from '../Screens/Private/RummyGameScreens/RummyJoinGame';
+import Setting from '../Screens/Private/Setting';
 
 export const AuthStack = () => {
 
@@ -45,6 +46,10 @@ export const HomeStack = () => {
             <Stack.Screen name="RummyGameMode" component={RummyGameMode} />
             <Stack.Screen name="RummyPoolTables" component={RummyPoolTables} />
             <Stack.Screen name="RummyJoinGame" component={RummyJoinGame} />
+            <Stack.Screen name="Setting" component={Setting} />
+
+
+
 
         </Stack.Navigator>
 
