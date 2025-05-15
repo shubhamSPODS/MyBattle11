@@ -3,14 +3,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { AuthStack, HomeStack } from './StackNavigation';
 import { StatusBar } from 'react-native';
+import { selectAuthToken } from '../Redux/Slice';
 
 const MainNavigation = () => {
-  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-
+  const token = useSelector(selectAuthToken);
   return (
-<>
-      {isLoggedIn ? <HomeStack /> : <AuthStack />}
-      </>
+    <>
+      {token ? <HomeStack /> :<AuthStack />}     
+       </>
   );
 };
 

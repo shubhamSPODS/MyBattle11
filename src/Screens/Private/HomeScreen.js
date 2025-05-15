@@ -1,5 +1,5 @@
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import HomeHeader from '../../Components/HomeHeader'
 import { BLACK, LIGHT_PURPLE, LINEAR_DARK_PURPLE, LINEAR_LIGHT_PURPLE, WHITE } from '../../Components/Colors'
 import Icon from '../../Components/Icon'
@@ -9,9 +9,22 @@ import LinearGradient from 'react-native-linear-gradient'
 import { SEMI_BOLD } from '../../Components/AppFonts'
 import { logout } from '../../Redux/Slice'
 import { useDispatch } from 'react-redux'
+import { getRequest } from '../../Backend/Backend'
 
 const HomeScreen = ({ navigation }) => {
     const dispatch = useDispatch();
+    const apiData =async()=>{
+        try {
+          const publicData = await getRequest('/public');
+        
+        } catch (error) {
+          console.log(error,'==errror');
+          
+        }
+       }
+       useEffect(()=>{
+        apiData()
+       },[])
     return (
 
         <View style={{ flex: 1, backgroundColor: WHITE }}>

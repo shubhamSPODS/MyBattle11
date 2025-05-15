@@ -7,6 +7,8 @@ import { BLACK, DARK_PURPLE, GREY, WHITE } from '../../Components/Colors';
 import { MEDIUM, REGULAR, SEMI_BOLD } from '../../Components/AppFonts';
 import Icon from '../../Components/Icon';
 import {BANK, LANGUAGE, THEME, NOTIFICATION, HELP, CONTACT, TERMS, PRIVACY, VERSION, PROFILE, CHANGE_PASSWORD, UPDATE } from '../../Components/ImageAsstes';
+import { useDispatch } from 'react-redux';
+import { logout, setUserToken, updateUserProfile } from '../../Redux/Slice';
 
 const MenuItem = ({ icon, title, rightText, onPress, showSwitch, isEnabled, onToggle }) => (
   <TouchableOpacity 
@@ -63,7 +65,7 @@ const SectionTitle = ({ title }) => (
 
 const Setting = () => {
   const [notifications, setNotifications] = React.useState(true);
-
+const dispatch = useDispatch()
   return (
     <View style={styles.container}>
       <HeaderComponent title="Settings" />
@@ -146,7 +148,9 @@ const Setting = () => {
 
       <TouchableOpacity 
         style={styles.logoutButton}
-        onPress={() => {}}
+        onPress={() => {
+          dispatch(setUserToken(null));
+        }}
       >
         <Typography 
           color={WHITE} 
