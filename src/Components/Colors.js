@@ -8,6 +8,11 @@ export const DARK_PURPLE ='#6412AB'
 export const LINEAR_DARK_PURPLE ='#56308B'
 export const LINEAR_LIGHT_PURPLE ='#56308B'
 export const GOLDEN ="#C8A030"
+export const LIGHT_SKY_BLUE ="#DBEAFE"
+export const LIGHT_GREEN ="#00B67A"
+
+
+
 
 
 

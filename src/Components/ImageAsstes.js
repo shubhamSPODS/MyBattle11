@@ -42,6 +42,7 @@ export const CONTACT = require('../assets/Images/Contact.png')
 export const TERMS = require('../assets/Images/Term.png')
 export const PRIVACY = require('../assets/Images/Privacy.png')
 export const VERSION = require('../assets/Images/Info.png')
+export const PLUS = require('../assets/Images/add.png')
 
 
 

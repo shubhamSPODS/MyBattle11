@@ -1,5 +1,5 @@
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React from 'react'
 import HomeHeader from '../../Components/HomeHeader'
 import { BLACK, LIGHT_PURPLE, LINEAR_DARK_PURPLE, LINEAR_LIGHT_PURPLE, WHITE } from '../../Components/Colors'
 import Icon from '../../Components/Icon'
@@ -9,22 +9,9 @@ import LinearGradient from 'react-native-linear-gradient'
 import { SEMI_BOLD } from '../../Components/AppFonts'
 import { logout } from '../../Redux/Slice'
 import { useDispatch } from 'react-redux'
-import { getRequest } from '../../Backend/Backend'
 
 const HomeScreen = ({ navigation }) => {
     const dispatch = useDispatch();
-    const apiData =async()=>{
-        try {
-          const publicData = await getRequest('/public');
-        
-        } catch (error) {
-          console.log(error,'==errror');
-          
-        }
-       }
-       useEffect(()=>{
-        apiData()
-       },[])
     return (
 
         <View style={{ flex: 1, backgroundColor: WHITE }}>
@@ -33,7 +20,10 @@ const HomeScreen = ({ navigation }) => {
             <ScrollView>
                 <Image
                     source={BANNER}
-                    style={{ width: FULL_WIDTH - 50, alignSelf: "center", height: 180, marginTop: 10 }}
+                    style={{ width: FULL_WIDTH - 50, 
+                        alignSelf: "center", 
+                        height: 180, 
+                        marginTop: 10 }}
                 />
                 <View>
                     <FlatList
@@ -42,6 +32,8 @@ const HomeScreen = ({ navigation }) => {
                             { id: 1, img: REWARDS, text: "Rewards" },
                             { id: 2, img: REFER, text: "Refers" },
                             { id: 3, img: WINNERS, text: "Winners" },
+                            { id: 4, img: FANTASY_BANNER, text: "Create Team" },
+                            { id: 5, img: FANTASY_BANNER, text: "Contests" },
                         ]}
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -51,10 +43,23 @@ const HomeScreen = ({ navigation }) => {
                         }}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={({ item }) => (
-                            <TouchableOpacity activeOpacity={0.9} style={{ alignItems: "center", marginHorizontal: 15 }}
+                            <TouchableOpacity 
+                                activeOpacity={0.9} 
+                                style={{ alignItems: "center", marginHorizontal: 15 }}
                                 onPress={() => {
-                                    dispatch(logout());
-
+                                    if (item.id === 4) {
+                                        navigation.navigate('CreateTeamScreen');
+                                    } else if (item.id === 5) {
+                                        navigation.navigate('CreateContestsScreen');
+                                    } else if (item.id === 0) {
+                                        // Handle Add Money
+                                    } else if (item.id === 1) {
+                                        // Handle Rewards
+                                    } else if (item.id === 2) {
+                                        // Handle Refers
+                                    } else if (item.id === 3) {
+                                        // Handle Winners
+                                    }
                                 }}
                             >
                                 <LinearGradient
@@ -76,7 +81,9 @@ const HomeScreen = ({ navigation }) => {
                 </View>
                 <Typography color={BLACK} fontFamily={SEMI_BOLD} style={{ marginHorizontal: 20, marginVertical: 15 }}>Popular games</Typography>
 
-                <TouchableOpacity activeOpacity={0.9} >
+                <TouchableOpacity activeOpacity={0.9} onPress={() => {
+                    navigation.navigate('ContestsScreen')
+                }}>
                     <Image style={{
                         width: FULL_WIDTH - 50,
                         height: 200,
@@ -85,7 +92,7 @@ const HomeScreen = ({ navigation }) => {
                     }}
                         source={FANTASY_BANNER}
                     ></Image>
-                </TouchableOpacity >
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
                     navigation.navigate('LudoGameMode')
                 }} activeOpacity={0.9}>

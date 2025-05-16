@@ -4,7 +4,7 @@ import Typography, { FULL_WIDTH } from './Typography'
 import { SEMI_BOLD } from './AppFonts'
 import { GOLDEN, WHITE } from './Colors'
 
-const CustomButton = ({style ,onPress,title=''}) => {
+const CustomButton = ({style ,onPress,title='',textStyle}) => {
     return (
         <TouchableOpacity
         onPress={onPress}
@@ -17,7 +17,7 @@ const CustomButton = ({style ,onPress,title=''}) => {
                 ...style
             }}
         >
-            <Typography color={WHITE} fontFamily={SEMI_BOLD}>{title}</Typography>
+            <Typography color={WHITE}  style ={{...textStyle}} fontFamily={SEMI_BOLD}>{title}</Typography>
         </TouchableOpacity>
     )
 }

@@ -12,6 +12,11 @@ import RummyGameMode from '../Screens/Private/RummyGameScreens/RummyGameMode';
 import RummyPoolTables from '../Screens/Private/RummyGameScreens/RummyPoolTables';
 import RummyJoinGame from '../Screens/Private/RummyGameScreens/RummyJoinGame';
 import Setting from '../Screens/Private/Setting';
+import ContestsScreen from '../Screens/Private/FantasyGameScreens/ContestsScreen';
+import CreateTeamScreen from '../Screens/Private/FantasyGameScreens/CreateTeamScreen';
+import SelectContestsScreen from '../Screens/Private/FantasyGameScreens/SelectContestsScreen';
+import ScoreboardScreen from '../Screens/Private/FantasyGameScreens/ScoreboardScreen';
+import ContestDetailsScreen from '../Screens/Private/FantasyGameScreens/ContestDetailsScreen';
 
 export const AuthStack = () => {
 
@@ -31,8 +36,6 @@ export const AuthStack = () => {
 
 
 export const HomeStack = () => {
-
-
     const Stack = createNativeStackNavigator();
     return (
         <Stack.Navigator initialRouteName='Tabs' screenOptions={{
@@ -47,6 +50,11 @@ export const HomeStack = () => {
             <Stack.Screen name="RummyPoolTables" component={RummyPoolTables} />
             <Stack.Screen name="RummyJoinGame" component={RummyJoinGame} />
             <Stack.Screen name="Setting" component={Setting} />
+            <Stack.Screen name="ContestsScreen" component={ContestsScreen} />
+            <Stack.Screen name="CreateTeamScreen" component={CreateTeamScreen} />
+            <Stack.Screen name="SelectContestsScreen" component={SelectContestsScreen} />
+            <Stack.Screen name="ScoreboardScreen" component={ScoreboardScreen} />
+            <Stack.Screen name="ContestDetailsScreen" component={ContestDetailsScreen} />
 
 
 
