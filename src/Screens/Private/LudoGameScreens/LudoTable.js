@@ -8,10 +8,8 @@ import { PROFILE2, WATCH } from '../../../Components/ImageAsstes';
 import { MEDIUM, REGULAR } from '../../../Components/AppFonts';
 import CustomButton from '../../../Components/CustomButton';
 import { GET_WITH_TOKEN } from '../../../Backend/Backend';
-
 const LudoTable = ({ navigation, route }) => {
     const routeData = route?.params?.gameType;
-    
     const [listData, setListData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [selectedTab, setSelectedTab] = useState(0);
@@ -24,11 +22,7 @@ const LudoTable = ({ navigation, route }) => {
         try {
           const response = await GET_WITH_TOKEN('table');
           if (response?.success === true) {
-            console.log('Full API response:', response?.data);
-      
             const filterData = response?.data?.filter(item => item?.gameMode === routeData);
-            // console.log('Filtered:', filterData);
-      
             setListData(filterData);
           }
         } catch (error) {
@@ -110,7 +104,7 @@ const TableItem = React.memo(({ item, navigation }) => {
             <CustomButton
                 title="Join Table"
                 style={{ marginBottom: 15, left: 0 }}
-                onPress={() => navigation.navigate('LudoJoinTable')}
+                onPress={() => navigation.navigate('LudoJoinTable',{playerDetails:item})}
             />
         </View>
     );
