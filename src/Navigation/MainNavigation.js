@@ -6,10 +6,10 @@ import { StatusBar } from 'react-native';
 import { selectAuthToken } from '../Redux/Slice';
 
 const MainNavigation = () => {
-  const token = useSelector(selectAuthToken);
+  const userToken = useSelector((state) => state.auth?.token);
   return (
     <>
-      {token ? <HomeStack /> :<AuthStack />}     
+      {userToken ? <HomeStack /> :<AuthStack />}     
        </>
   );
 };

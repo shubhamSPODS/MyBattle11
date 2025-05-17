@@ -10,23 +10,43 @@ import { DICE, DICE_2, LUDO_IMG, PROFILE2, SAFE_SECURE, SECURE, SUPPORT, USER_IM
 import io from 'socket.io-client';
 import { useSelector } from 'react-redux';
 import { BASE_URL, GET_WITH_TOKEN } from '../../../Backend/Backend';
+import Toast from 'react-native-simple-toast';
+import Loader from '../../../Components/Loader';
 
 const LudoJoinTable = ({ route }) => {
   const userData = useSelector((state) => state.auth.user);
   const [matchId, setMatchId] = useState('')
   const socket = useRef(null);
   const routeData = route?.params?.playerDetails
-  console.log(routeData, '==userData');
-
-  const [players, setPlayers] = useState([
-  ]);
+  const [isSocketConnected, setIsSocketConnected] = useState(false);
+  const [players, setPlayers] = useState([]);
   const [isJoining, setIsJoining] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    return () => {
+      if (socket.current) {
+        console.log('🧹 Cleaning up socket connection...');
+        socket.current.disconnect();
+        console.log('🔌 Socket disconnected on unmount');
+        setIsSocketConnected(false);
+        setIsLoading(false);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!!matchId) {
+      onMatchIdFound();
+    }
+  }, [matchId]);
+
+  const setupSocketConnection = () => {
     let url = 'https://app.mybattle11.com/server/matchmaking'
     let path = '/socket.io'
     let transports = ['websocket']
     console.log('🔄 Setting up socket connection...');
+    setIsLoading(true);
 
     socket.current = io(url, {
       path: path,
@@ -42,6 +62,8 @@ const LudoJoinTable = ({ route }) => {
       console.log('✅ Socket connected');
       console.log('🔌 Socket ID:', socket.current.id);
       console.log('📡 Connection state:', socket.current.connected);
+      setIsSocketConnected(true);
+      setIsLoading(true);
     });
 
     socket.current.on('error', (err) => {
@@ -50,23 +72,28 @@ const LudoJoinTable = ({ route }) => {
         type: err.type,
         description: err.description
       });
+      setIsLoading(false);
     });
 
     socket.current.on('info', (playerData) => {
       console.log('📥 info', playerData);
       setPlayers(prev => [...prev, playerData]);
+      if (playerData) {
+        setIsLoading(false);
+      }
     });
 
     socket.current.on('disconnect', (reason) => {
       console.log('❌ Socket disconnected:', reason);
+      setIsSocketConnected(false);
+      setIsLoading(false);
     });
 
-    // Listen for match_found event from server
-    console.log('🎯 Setting up match_found listener...');
     socket.current.on('match_found', (matchData) => {
       console.log('🎮 Match found event received!');
       console.log('📦 Match data:', matchData);
       setIsJoining(true);
+      setIsLoading(true);
 
       if (matchData?.matchId) {
         console.log('✅ Match found successfully');
@@ -74,26 +101,24 @@ const LudoJoinTable = ({ route }) => {
       } else {
         console.log('❌ Match found but with error:', matchData?.message);
         setIsJoining(false);
+        setIsLoading(false);
       }
     });
 
-    // Listen for match status updates
     socket.current.on('match_status', (status) => {
       console.log('📊 Match status update:', status);
     });
 
-    // Listen for contest joining errors
     socket.current.on('contest_join_error', (error) => {
       console.log('❌ Contest join error:', error);
       setIsJoining(false);
     });
 
-    // Add error handler
     socket.current.on('error', (error) => {
       console.log('❌ Socket error:', error);
+      Toast.show('Match not found.')
     });
 
-    // Add reconnection handlers
     socket.current.on('reconnect', (attemptNumber) => {
       console.log('🔄 Socket reconnected after', attemptNumber, 'attempts');
     });
@@ -101,40 +126,49 @@ const LudoJoinTable = ({ route }) => {
     socket.current.on('reconnect_error', (error) => {
       console.log('❗ Reconnection error:', error);
     });
+  };
 
-
-    return () => {
-      if (socket.current) {
-        console.log('🧹 Cleaning up socket connection...');
-        socket.current.disconnect();
-        console.log('🔌 Socket disconnected on unmount');
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!!matchId) {
-      onMatchIdFound();
+  const handleJoinTable = () => {
+    if (walletBalance === 0) {
+      Toast.show('Match not found.');
+      return;
     }
-  }, [matchId]);
+
+    if (!socket.current?.connected) {
+      setupSocketConnection();
+    }
+
+    if (socket.current?.connected) {
+      console.log('📤 Requesting to join table...');
+      console.log('📝 Join request data:', {
+        playerId: userData?._id,
+        contestId: routeData?._id
+      });
+      setIsLoading(true);
+      setIsJoining(true);
+
+      socket.current.emit('join_table', {
+        playerId: userData?._id,
+        contestId: routeData?._id,
+        timestamp: Date.now()
+      });
+    } else {
+      setIsLoading(false);
+    }
+  };
 
   const onMatchIdFound = async () => {
     try {
       const matchFoundRes = await GET_WITH_TOKEN(`game/${matchId}`);
 
       if (matchFoundRes?.success === true) {
-        // Filter out current user's ID from the players array
         const otherPlayerIds = matchFoundRes?.data?.players?.filter(
           playerId => playerId !== userData?._id
         );
-
-        // Fetch profile for each player
         const playerProfiles = await Promise.all(
           otherPlayerIds.map(async (playerId) => {
             try {
               const profileRes = await GET_WITH_TOKEN(`user/getprofile?user_id=${playerId}`);
-              console.log(profileRes, '==responseprofile');
-
               if (profileRes?.success) {
                 return {
                   name: profileRes?.data?.username || 'Player',
@@ -150,45 +184,27 @@ const LudoJoinTable = ({ route }) => {
             }
           })
         );
-
         const validPlayers = playerProfiles?.filter(player => player !== null);
         setPlayers(validPlayers);
       }
     } catch (error) {
       console.log(error, '==error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-
-  const handleJoinTable = () => {
-    if (socket.current?.connected) {
-      console.log('📤 Requesting to join table...');
-      console.log('📝 Join request data:', {
-        playerId: userData?._id,
-        contestId: routeData?._id
-      });
-      setIsJoining(true);
-
-      // Emit join_table event to request joining
-      socket.current.emit('join_table', {
-        playerId: userData?._id,
-        contestId: routeData?._id,
-        timestamp: Date.now()
-      });
-    } else {
-      console.log('⚠️ Socket not connected, cannot join table');
-    }
-  };
   const walletBalance = Number(userData?.winning_amount || 0) + Number(userData?.cash_bonus || 0) + Number(userData?.totaldeposit || 0)
   const balanceAfterJoin = walletBalance - routeData?.bet
   return (
     <View style={{ flex: 1, backgroundColor: WHITE }}>
+
       <HeaderComponent title={'Join Table'} />
 
       <View style={styles.card}>
         <View style={styles.tableHeader}>
           <Typography size={16} fontFamily={SEMI_BOLD}>{routeData?.gameMode}</Typography>
- <Icon source={DICE} size={40}/>
+          <Icon source={DICE} size={40} />
         </View>
 
         <View style={styles.tableInfo}>
@@ -231,8 +247,6 @@ const LudoJoinTable = ({ route }) => {
           </View>
         ))}
       </View>
-
-      {/* Wallet Balance */}
       <View style={styles.card}>
         <View style={styles.balanceRow}>
           <Typography size={14} fontFamily={MEDIUM}>Wallet Balance</Typography>
@@ -267,6 +281,8 @@ const LudoJoinTable = ({ route }) => {
         onPress={handleJoinTable}
         disabled={isJoining}
       />
+
+      <Loader visible={isLoading} />
     </View>
   );
 };

@@ -15,10 +15,9 @@ const authSlice = createSlice({
     },
     updateUserProfile: (state, action) => {
       state.user = { ...state.user, ...action.payload };
-      state.token = action.payload?.accessToken || null; // store token from payload
     },
     setUserToken: (state, action) => {
-      state.token = action.payload; // explicitly set token
+      state.token = action.payload; 
     },
   },
 });

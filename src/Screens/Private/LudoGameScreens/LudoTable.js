@@ -8,30 +8,70 @@ import { PROFILE2, WATCH } from '../../../Components/ImageAsstes';
 import { MEDIUM, REGULAR } from '../../../Components/AppFonts';
 import CustomButton from '../../../Components/CustomButton';
 import { GET_WITH_TOKEN } from '../../../Backend/Backend';
+import Toast from 'react-native-simple-toast';
+import Loader from '../../../Components/Loader';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserToken, updateUserProfile } from '../../../Redux/Slice';
 const LudoTable = ({ navigation, route }) => {
+    const dispatch = useDispatch();
+    const userData = useSelector((state) => state.auth.user);
+    console.log(userData,'=====user ka data ');
+    
+    const walletBalance = Number(userData?.winning_amount || 0) + Number(userData?.cash_bonus || 0) + Number(userData?.totaldeposit || 0)
+    const [visible, setVisible] = useState(false)
     const routeData = route?.params?.gameType;
     const [listData, setListData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [selectedTab, setSelectedTab] = useState(0);
-    const [tabs,setTabs] = useState([
+    const [tabs, setTabs] = useState([
         { id: 0, name: 'All Tables' },
         { id: 1, name: '1v1 Game' },
         { id: 2, name: '4 Players' },
     ]);
+       
+    const updateProfile = async () => {
+        try {
+            const profileData = await GET_WITH_TOKEN('user/profile')
+            console.log(profileData,'==profiledata');
+            if (profileData?.success === true) {
+                dispatch(updateUserProfile(profileData?.data))
+            }
+
+        } catch (error) {
+            console.log(error, '==error==');
+
+        }
+    }
+
+    const onJoinTable = (item) => {
+        if (walletBalance === 0) {
+            Toast.show('Please add money on your wallet.', Toast.LONG);
+            return;
+        }else{
+            navigation.navigate('LudoJoinTable', { playerDetails: item });
+
+        }
+    }
     const getTableData = useCallback(async () => {
         try {
-          const response = await GET_WITH_TOKEN('table');
-          if (response?.success === true) {
-            const filterData = response?.data?.filter(item => item?.gameMode === routeData);
-            setListData(filterData);
-          }
+            setVisible(true)
+            const response = await GET_WITH_TOKEN('table');
+            if (response?.success === true) {
+                setVisible(false)
+                const filterData = response?.data?.filter(item => item?.gameMode === routeData);
+                setListData(filterData);
+            } else {
+                setVisible(false)
+            }
         } catch (error) {
-          console.log('Fetch Error:', error);
+            setVisible(false)
+            console.log('Fetch Error:', error);
         }
-      }, [routeData]);
-      
+    }, [routeData]);
+
 
     useEffect(() => {
+        updateProfile()
         getTableData();
     }, [getTableData]);
 
@@ -41,14 +81,14 @@ const LudoTable = ({ navigation, route }) => {
             data = data?.filter(item => item?.gameType === '2 Player');
         } else if (selectedTab === 2) {
             data = data?.filter(item => item?.gameType === '4 Player');
-        } 
+        }
         setFilteredData(data);
     }, [selectedTab, listData]);
 
     return (
         <View style={styles.container}>
             <HeaderComponent title="Table" walletIcon={false} />
-
+            <Loader visible={visible} />
             <View style={styles.tabContainer}>
                 <FlatList
                     horizontal
@@ -60,24 +100,24 @@ const LudoTable = ({ navigation, route }) => {
                             style={[styles.tab, selectedTab === item.id && styles.selectedTab]}
                             onPress={() => setSelectedTab(item?.id)}
                         >
-                            <Typography size={12} color={selectedTab === item.id  ? WHITE : BLACK}>{item.name}</Typography>
+                            <Typography size={12} color={selectedTab === item.id ? WHITE : BLACK}>{item.name}</Typography>
                         </TouchableOpacity>
                     )}
                 />
             </View>
 
             <FlatList
-                data={filteredData}showsVerticalScrollIndicator={false}
+                data={filteredData} showsVerticalScrollIndicator={false}
                 keyExtractor={(item, index) => item?._id || index.toString()}
                 renderItem={({ item }) => (
-                    <TableItem item={item} navigation={navigation} />
+                    <TableItem item={item} navigation={navigation} onJoinTable={onJoinTable} />
                 )}
             />
         </View>
     );
 };
 
-const TableItem = React.memo(({ item, navigation }) => {
+const TableItem = React.memo(({ item, navigation, onJoinTable }) => {
     return (
         <View style={styles.tableCard}>
             <View style={styles.rowBetween}>
@@ -104,7 +144,9 @@ const TableItem = React.memo(({ item, navigation }) => {
             <CustomButton
                 title="Join Table"
                 style={{ marginBottom: 15, left: 0 }}
-                onPress={() => navigation.navigate('LudoJoinTable',{playerDetails:item})}
+                onPress={() => {
+                    onJoinTable(item)
+                }}
             />
         </View>
     );
