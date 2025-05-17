@@ -15,8 +15,7 @@ import { setUserToken, updateUserProfile } from '../../../Redux/Slice';
 const LudoTable = ({ navigation, route }) => {
     const dispatch = useDispatch();
     const userData = useSelector((state) => state.auth.user);
-    console.log(userData,'=====user ka data ');
-    
+
     const walletBalance = Number(userData?.winning_amount || 0) + Number(userData?.cash_bonus || 0) + Number(userData?.totaldeposit || 0)
     const [visible, setVisible] = useState(false)
     const routeData = route?.params?.gameType;
@@ -28,11 +27,10 @@ const LudoTable = ({ navigation, route }) => {
         { id: 1, name: '1v1 Game' },
         { id: 2, name: '4 Players' },
     ]);
-       
+
     const updateProfile = async () => {
         try {
             const profileData = await GET_WITH_TOKEN('user/profile')
-            console.log(profileData,'==profiledata');
             if (profileData?.success === true) {
                 dispatch(updateUserProfile(profileData?.data))
             }
@@ -47,7 +45,7 @@ const LudoTable = ({ navigation, route }) => {
         if (walletBalance === 0) {
             Toast.show('Please add money on your wallet.', Toast.LONG);
             return;
-        }else{
+        } else {
             navigation.navigate('LudoJoinTable', { playerDetails: item });
 
         }
@@ -82,6 +80,7 @@ const LudoTable = ({ navigation, route }) => {
         } else if (selectedTab === 2) {
             data = data?.filter(item => item?.gameType === '4 Player');
         }
+        data.sort((a, b) => Number(a?.bet || 0) - Number(b?.bet || 0));
         setFilteredData(data);
     }, [selectedTab, listData]);
 
@@ -135,10 +134,9 @@ const TableItem = React.memo(({ item, navigation, onJoinTable }) => {
                 <Typography fontFamily={REGULAR} size={14}>Entry Fees</Typography>
                 <Typography fontFamily={REGULAR} size={14}>Prize Pool</Typography>
             </View>
-
             <View style={styles.rowBetweenMargin}>
-                <Typography fontFamily={REGULAR} size={20} color={'#10B981'}>₹{item?.bet || ''}</Typography>
-                <Typography fontFamily={REGULAR} size={20} color={'#10B981'}>₹{item?.totalBet || ''}</Typography>
+                <Typography fontFamily={REGULAR} size={20} color={'#10B981'}>{item?.bet === 0 ? 'Free' : `₹${item?.bet}`}</Typography>
+                <Typography fontFamily={REGULAR} size={20} color={'#10B981'}>{item?.totalBet === 0 ? 'Free' : `₹${item?.totalBet}`}</Typography>
             </View>
 
             <CustomButton

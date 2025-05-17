@@ -12,9 +12,11 @@ import { useSelector } from 'react-redux';
 import { BASE_URL, GET_WITH_TOKEN } from '../../../Backend/Backend';
 import Toast from 'react-native-simple-toast';
 import Loader from '../../../Components/Loader';
+import { launchUnityWithData } from 'react-native-unity-launcher';
 
 const LudoJoinTable = ({ route }) => {
   const userData = useSelector((state) => state.auth.user);
+  const userToken = useSelector((state) => state.auth?.token);
   const [matchId, setMatchId] = useState('')
   const socket = useRef(null);
   const routeData = route?.params?.playerDetails
@@ -34,6 +36,7 @@ const LudoJoinTable = ({ route }) => {
       }
     };
   }, []);
+console.log(routeData?._id,'=routeData?._id');
 
   useEffect(() => {
     if (!!matchId) {
@@ -42,10 +45,9 @@ const LudoJoinTable = ({ route }) => {
   }, [matchId]);
 
   const setupSocketConnection = () => {
-    let url = 'https://app.mybattle11.com/server/matchmaking'
+    let url = `${BASE_URL}server/matchmaking`
     let path = '/socket.io'
     let transports = ['websocket']
-    console.log('🔄 Setting up socket connection...');
     setIsLoading(true);
 
     socket.current = io(url, {
@@ -57,7 +59,7 @@ const LudoJoinTable = ({ route }) => {
       },
       forceNew: true,
     });
-console.log(routeData?._id,'routeData?._id');
+    console.log(routeData?._id, 'routeData?._id');
 
     socket.current.on('connect', () => {
       console.log('✅ Socket connected');
@@ -111,6 +113,7 @@ console.log(routeData?._id,'routeData?._id');
       if (matchData?.matchId) {
         console.log('✅ Match found successfully');
         setMatchId(matchData?.matchId);
+
       } else {
         console.log('❌ Match found but with error:', matchData?.message);
         setIsJoining(false);
@@ -129,7 +132,7 @@ console.log(routeData?._id,'routeData?._id');
     socket.current.on('error', (error) => {
       console.log('❌ Socket error:', error);
       if (error.message === 'Connection timeout reached') {
-       Toast.show('No match found.')
+        Toast.show('No match found.')
         setIsLoading(false);
         setIsJoining(false);
       }
@@ -187,8 +190,8 @@ console.log(routeData?._id,'routeData?._id');
   const onMatchIdFound = async () => {
     try {
       const matchFoundRes = await GET_WITH_TOKEN(`game/${matchId}`);
-  console.log(matchFoundRes,'==response');
-  
+      console.log(matchFoundRes, '==response');
+
       if (matchFoundRes?.success === true) {
         const otherPlayerIds = matchFoundRes?.data?.players?.filter(
           playerId => playerId !== userData?._id
@@ -197,8 +200,8 @@ console.log(routeData?._id,'routeData?._id');
           otherPlayerIds.map(async (playerId) => {
             try {
               const profileRes = await GET_WITH_TOKEN(`user/getprofile?user_id=${playerId}`);
-             console.log(profileRes,'==response>>',`user/getprofile?user_id=${playerId}`);
-             
+              console.log(profileRes, '==response>>', `user/getprofile?user_id=${playerId}`);
+
               if (profileRes?.success) {
                 return {
                   name: profileRes?.data?.username || 'Player',
@@ -216,6 +219,13 @@ console.log(routeData?._id,'routeData?._id');
         );
         const validPlayers = playerProfiles?.filter(player => player !== null);
         setPlayers(validPlayers);
+        if (!!validPlayers) {
+
+          launchUnityWithData(`${BASE_URL}`, `${BASE_URL}`, userToken, 'ludo', matchId)
+
+        }
+
+
       }
     } catch (error) {
       console.log(error, '==error');
@@ -269,9 +279,9 @@ console.log(routeData?._id,'routeData?._id');
         </View>
         {players?.map((item, index) => (
           <View key={index} style={styles.playerItem}>
-            {console.log(item,'==item>>')
+            {console.log(item, '==item>>')
             }
-            <Image source={{ uri: item?.avatar }|| USER_IMG} style={styles.playerAvatar} />
+            <Image source={{ uri: item?.avatar } || USER_IMG} style={styles.playerAvatar} />
             <View>
               <Typography size={14} fontFamily={SEMI_BOLD}>{item?.name}</Typography>
               <Typography size={12} color={GREY} fontFamily={MEDIUM}>Joined {item?.joinedAt}</Typography>

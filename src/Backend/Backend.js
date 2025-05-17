@@ -1,6 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const BASE_URL = "https://app.mybattle11.com/"
+// export const BASE_URL = "http://192.168.1.18:4013/"
+
+
 
 
 // Helper to get token
