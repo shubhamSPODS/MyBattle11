@@ -57,6 +57,7 @@ const LudoJoinTable = ({ route }) => {
       },
       forceNew: true,
     });
+console.log(routeData?._id,'routeData?._id');
 
     socket.current.on('connect', () => {
       console.log('✅ Socket connected');
@@ -64,6 +65,16 @@ const LudoJoinTable = ({ route }) => {
       console.log('📡 Connection state:', socket.current.connected);
       setIsSocketConnected(true);
       setIsLoading(true);
+      setTimeout(() => {
+        if (socket.current?.connected) {
+          console.log('🕒 Emitting get_players after 15 seconds');
+          socket.current.emit('get_players', {
+            playerId: userData?._id,
+            contestId: routeData?._id,
+            timestamp: Date.now()
+          });
+        }
+      }, 15000);
     });
 
     socket.current.on('error', (err) => {
@@ -72,21 +83,23 @@ const LudoJoinTable = ({ route }) => {
         type: err.type,
         description: err.description
       });
-      setIsLoading(false);
     });
 
     socket.current.on('info', (playerData) => {
       console.log('📥 info', playerData);
-      setPlayers(prev => [...prev, playerData]);
-      if (playerData) {
-        setIsLoading(false);
+      if (playerData?.matchId) {
+        setPlayers(prev => [...prev, playerData]);
       }
     });
 
     socket.current.on('disconnect', (reason) => {
       console.log('❌ Socket disconnected:', reason);
       setIsSocketConnected(false);
-      setIsLoading(false);
+      if (reason === 'io server disconnect') {
+        console.log('❌ Server disconnected, stopping loader');
+        setIsLoading(false);
+        setIsJoining(false);
+      }
     });
 
     socket.current.on('match_found', (matchData) => {
@@ -101,7 +114,6 @@ const LudoJoinTable = ({ route }) => {
       } else {
         console.log('❌ Match found but with error:', matchData?.message);
         setIsJoining(false);
-        setIsLoading(false);
       }
     });
 
@@ -116,11 +128,26 @@ const LudoJoinTable = ({ route }) => {
 
     socket.current.on('error', (error) => {
       console.log('❌ Socket error:', error);
-      Toast.show('Match not found.')
+      if (error.message === 'Connection timeout reached') {
+       Toast.show('No match found.')
+        setIsLoading(false);
+        setIsJoining(false);
+      }
     });
 
     socket.current.on('reconnect', (attemptNumber) => {
-      console.log('🔄 Socket reconnected after', attemptNumber, 'attempts');
+      console.log('✅ Socket reconnected after', attemptNumber, 'attempts');
+      setIsSocketConnected(true);
+      setTimeout(() => {
+        if (socket.current?.connected) {
+          console.log('🔄 Re-emitting get_players after reconnection');
+          socket.current.emit('get_players', {
+            playerId: userData?._id,
+            contestId: routeData?._id,
+            timestamp: Date.now()
+          });
+        }
+      }, 15000);
     });
 
     socket.current.on('reconnect_error', (error) => {
@@ -147,7 +174,7 @@ const LudoJoinTable = ({ route }) => {
       setIsLoading(true);
       setIsJoining(true);
 
-      socket.current.emit('join_table', {
+      socket.current.emit('get_players', {
         playerId: userData?._id,
         contestId: routeData?._id,
         timestamp: Date.now()
@@ -160,7 +187,8 @@ const LudoJoinTable = ({ route }) => {
   const onMatchIdFound = async () => {
     try {
       const matchFoundRes = await GET_WITH_TOKEN(`game/${matchId}`);
-
+  console.log(matchFoundRes,'==response');
+  
       if (matchFoundRes?.success === true) {
         const otherPlayerIds = matchFoundRes?.data?.players?.filter(
           playerId => playerId !== userData?._id
@@ -169,6 +197,8 @@ const LudoJoinTable = ({ route }) => {
           otherPlayerIds.map(async (playerId) => {
             try {
               const profileRes = await GET_WITH_TOKEN(`user/getprofile?user_id=${playerId}`);
+             console.log(profileRes,'==response>>',`user/getprofile?user_id=${playerId}`);
+             
               if (profileRes?.success) {
                 return {
                   name: profileRes?.data?.username || 'Player',
@@ -239,7 +269,9 @@ const LudoJoinTable = ({ route }) => {
         </View>
         {players?.map((item, index) => (
           <View key={index} style={styles.playerItem}>
-            <Image source={{ uri: item?.avatar }} style={styles.playerAvatar} />
+            {console.log(item,'==item>>')
+            }
+            <Image source={{ uri: item?.avatar }|| USER_IMG} style={styles.playerAvatar} />
             <View>
               <Typography size={14} fontFamily={SEMI_BOLD}>{item?.name}</Typography>
               <Typography size={12} color={GREY} fontFamily={MEDIUM}>Joined {item?.joinedAt}</Typography>
