@@ -7,10 +7,10 @@ import { BLACK } from './Colors';
 import { BOLD, SEMI_BOLD } from './AppFonts';
 import { useNavigation } from '@react-navigation/native';
 
-const HeaderComponent = ({ title, onWalletPress,walletIcon }) => {
+const HeaderComponent = ({ title, onWalletPress,walletIcon ,style}) => {
   const navigation = useNavigation()
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{...style}]}>
       <View style={styles.side}>
         <TouchableOpacity onPress={() => {
           navigation.goBack()

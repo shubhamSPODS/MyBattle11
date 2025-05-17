@@ -46,7 +46,8 @@ const Login = () => {
           resend: true,
         };
         const loginRes = await POST('send-otp', data);
-        
+          console.log(loginRes,'==login');
+          
         if (loginRes?.success===true) {
           Toast.show(loginRes?.message);
            navigation.navigate('Otp',{isPhoneNumber:number})

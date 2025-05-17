@@ -43,6 +43,16 @@ export const TERMS = require('../assets/Images/Term.png')
 export const PRIVACY = require('../assets/Images/Privacy.png')
 export const VERSION = require('../assets/Images/Info.png')
 export const PLUS = require('../assets/Images/add.png')
+export const LUDO_IMG = require('../assets/Images/LudoImg.png')
+export const CLASSIC_MODE = require('../assets/Images/ClassicMode.png')
+export const DICE = require('../assets/Images/dice.png')
+export const DICE_1= require('../assets/Images/dice1.png')
+export const DICE_2= require('../assets/Images/dice2.png')
+
+
+
+
+
 
 
 

@@ -31,7 +31,8 @@ const Otp = ({route}) => {
         otp: code,
       };
       const otpResponse = await POST('user/signup', data);
-      
+        console.log(otpResponse,'==response otp');
+        
       if (otpResponse?.success===true) {
         await AsyncStorage.setItem('authToken', otpResponse?.data?.accessToken);
         dispatch(updateUserProfile(otpResponse?.data))

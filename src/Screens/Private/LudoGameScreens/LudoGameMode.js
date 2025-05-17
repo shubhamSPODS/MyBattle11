@@ -1,61 +1,103 @@
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, Animated } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import HeaderComponent from '../../../Components/HeaderComponent'
 import Typography, { FULL_WIDTH } from '../../../Components/Typography'
-import { GOLDEN, GREY,  WHITE } from '../../../Components/Colors'
+import { GOLDEN, GREY, WHITE } from '../../../Components/Colors'
 import Icon from '../../../Components/Icon'
-import { PROFILE2 } from '../../../Components/ImageAsstes'
+import { DICE, DICE_1, DICE_2, PROFILE2 } from '../../../Components/ImageAsstes'
 import { MEDIUM, SEMI_BOLD } from '../../../Components/AppFonts'
 import CustomButton from '../../../Components/CustomButton'
 import { useNavigation } from '@react-navigation/native'
 
 const LudoGameMode = () => {
     const navigation = useNavigation()
-    return (
-        <View style={{ flex: 1, backgroundColor: WHITE }}>
-            <HeaderComponent title='Select Game Mode'  walletIcon={true}/>
-            <ScrollView>
-            <FlatList
-                data={[1,2,3 ]}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item, index }) => {
-                    return (
-                        <View style={styles.card}>
-                            <View style={styles.cardInner}>
-                                <View style={{ width: '100%', flexDirection: 'row' }}>
-                                    <View style={{ flex: 1, }}>
-                                        <Typography size={16} fontFamily={SEMI_BOLD}>1v1 Battle</Typography>
-                                        <Typography size={13} color={GREY} fontFamily={MEDIUM}>
-                                            Challenge one player head-to-head
-                                        </Typography>
-                                        <Typography size={12} fontFamily={MEDIUM}>
-                                            Entry from ₹10
-                                        </Typography>
-                                      
-                                       <CustomButton title='Play Now' onPress={()=>{
-                                              navigation.navigate('LudoTable')
-                                       }}/>
+    const [gameMode, setGameMode] = useState([
+        {
+            id: 0,
+            name: 'Classic',
+            description: `Classic Mode Traditional Ludo gameplay — compete and win to earn real money.`,
+            img: DICE,
+            gameMode: 'Classic',
+        },
+        {
+            id: 1,
+            name: 'Dice',
+            description: `Dice Mode Fast-paced action — roll the dice quickly before time runs out.`,
+            img: DICE_1,
+            gameMode: 'Timer',
+        },
+        {
+            id: 2,
+            name: 'Number',
+            description: `Number Mode Strategic scoring — the higher you score, the more you earn.`,
+            img: DICE_2,
+            gameMode: 'Turbo',
+        },
+    ])
 
-                                    </View>
-                                    <TouchableOpacity>
-                                        <Icon source={PROFILE2} size={25} />
-                                    </TouchableOpacity>
-                                </View>
+    const fadeAnims = useRef(gameMode?.map(() => new Animated.Value(0))).current
+    useEffect(() => {
+        const animations = fadeAnims.map((anim, index) => {
+            return Animated.timing(anim, {
+                toValue: 1,
+                duration: 500,
+                delay: index * 200,
+                useNativeDriver: true,
+            })
+        })
+        Animated.stagger(200, animations).start()
+    }, [])
 
-                            </View>
+    const renderItem = ({ item, index }) => {
+        return (
+            <Animated.View
+                style={[
+                    styles.card,
+                    {
+                        opacity: fadeAnims[index],
+                        transform: [{
+                            translateY: fadeAnims[index].interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [50, 0]
+                            })
+                        }]
+                    }
+                ]}
+            >
+                <View style={styles.cardInner}>
+                    <View style={{ width: '100%', flexDirection: 'row' }}>
+                        <View style={{ flex: 1, }}>
+                            <Typography size={16} fontFamily={SEMI_BOLD}>{item?.name}</Typography>
+                            <Typography size={13} color={GREY} fontFamily={MEDIUM}>
+                                {item?.description}
+                            </Typography>
 
+
+                            <CustomButton style={{ left: 15 }} title='Play Now' onPress={() => {
+                                navigation.navigate('LudoTable', { gameType: item?.gameMode })
+                            }} />
 
                         </View>
-                    )
-                }}
-            />
+                        <TouchableOpacity>
+                            <Icon source={item?.img} size={35} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Animated.View>
+        )
+    }
 
-
+    return (
+        <View style={{ flex: 1, backgroundColor: WHITE }}>
+            <HeaderComponent title='Select Game Mode' walletIcon={true} />
+            <ScrollView>
+                <FlatList
+                    data={gameMode}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={renderItem}
+                />
             </ScrollView>
-            <CustomButton 
-        title="Join Table Now"
-        style={styles.joinButton}
-      />
+
         </View>
     )
 }
@@ -69,7 +111,7 @@ const styles = StyleSheet.create({
         elevation: 1,
         marginVertical: 15,
         borderRadius: 10,
-      
+
     },
     cardInner: {
         padding: 10,
