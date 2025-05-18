@@ -27,6 +27,7 @@
     "react-native-simple-toast": "^3.3.2",
     "react-native-tab-view": "^4.1.0",
     "react-native-unity-launcher": "github:maulikatwork/react-native-unity-launcher",
+    "react-native-webview": "^13.13.5",
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
     "socket.io-client": "^4.8.1"

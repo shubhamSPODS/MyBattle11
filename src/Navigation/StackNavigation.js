@@ -17,10 +17,10 @@ import CreateTeamScreen from '../Screens/Private/FantasyGameScreens/CreateTeamSc
 import SelectContestsScreen from '../Screens/Private/FantasyGameScreens/SelectContestsScreen';
 import ScoreboardScreen from '../Screens/Private/FantasyGameScreens/ScoreboardScreen';
 import ContestDetailsScreen from '../Screens/Private/FantasyGameScreens/ContestDetailsScreen';
+import WebUrl from '../Screens/WebUrl';
+import ChangePassword from '../Screens/Private/ChangePassword';
 
 export const AuthStack = () => {
-
-
     const Stack = createNativeStackNavigator();
     return (
         <Stack.Navigator initialRouteName='Login' screenOptions={{
@@ -28,12 +28,13 @@ export const AuthStack = () => {
         }}>
             <Stack.Screen name='Login' component={Login}></Stack.Screen>
             <Stack.Screen name='Otp' component={Otp}></Stack.Screen>
+            <Stack.Screen name='WebUrl' component={WebUrl}></Stack.Screen>
+
         </Stack.Navigator>
 
     )
 
 }
-
 
 export const HomeStack = () => {
     const Stack = createNativeStackNavigator();
@@ -42,7 +43,6 @@ export const HomeStack = () => {
             headerShown: false
         }}>
             <Stack.Screen name="Tabs" component={TabNavigation} />
-
             <Stack.Screen name="LudoGameMode" component={LudoGameMode} />
             <Stack.Screen name="LudoTable" component={LudoTable} />
             <Stack.Screen name="LudoJoinTable" component={LudoJoinTable} />
@@ -55,9 +55,8 @@ export const HomeStack = () => {
             <Stack.Screen name="SelectContestsScreen" component={SelectContestsScreen} />
             <Stack.Screen name="ScoreboardScreen" component={ScoreboardScreen} />
             <Stack.Screen name="ContestDetailsScreen" component={ContestDetailsScreen} />
-
-
-
+            <Stack.Screen name='WebUrl' component={WebUrl}/>
+            <Stack.Screen name='ChangePassword' component={ChangePassword}/>
 
         </Stack.Navigator>
 

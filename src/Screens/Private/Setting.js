@@ -6,20 +6,20 @@ import Typography from '../../Components/Typography';
 import { BLACK, DARK_PURPLE, GREY, WHITE } from '../../Components/Colors';
 import { MEDIUM, REGULAR, SEMI_BOLD } from '../../Components/AppFonts';
 import Icon from '../../Components/Icon';
-import {BANK, LANGUAGE, THEME, NOTIFICATION, HELP, CONTACT, TERMS, PRIVACY, VERSION, PROFILE, CHANGE_PASSWORD, UPDATE } from '../../Components/ImageAsstes';
+import { BANK, LANGUAGE, THEME, NOTIFICATION, HELP, CONTACT, TERMS, PRIVACY, VERSION, PROFILE, CHANGE_PASSWORD, UPDATE, LEGALITIES, FAIR_PLAY, RESPONSIBLE, POINTS_SYSTEM, HOW_TO_PLAY, ABOUT } from '../../Components/ImageAsstes';
 import { useDispatch } from 'react-redux';
 import { logout, setUserToken, updateUserProfile } from '../../Redux/Slice';
 
 const MenuItem = ({ icon, title, rightText, onPress, showSwitch, isEnabled, onToggle }) => (
-  <TouchableOpacity 
-    style={styles.menuItem} 
+  <TouchableOpacity
+    style={styles.menuItem}
     onPress={onPress}
     disabled={showSwitch}
   >
     <View style={styles.leftContent}>
       <Icon source={icon} size={20} tintColor={DARK_PURPLE} />
-      <Typography 
-        style={styles.menuTitle} 
+      <Typography
+        style={styles.menuTitle}
         fontFamily={REGULAR}
       >
         {title}
@@ -27,7 +27,7 @@ const MenuItem = ({ icon, title, rightText, onPress, showSwitch, isEnabled, onTo
     </View>
     <View style={styles.rightContent}>
       {rightText && (
-        <Typography 
+        <Typography
           style={styles.rightText}
           color={GREY}
           fontFamily={REGULAR}
@@ -43,9 +43,9 @@ const MenuItem = ({ icon, title, rightText, onPress, showSwitch, isEnabled, onTo
           thumbColor={WHITE}
         />
       ) : (
-        <Icon 
-          source={require('../../assets/Images/next.png')} 
-          size={12} 
+        <Icon
+          source={require('../../assets/Images/next.png')}
+          size={12}
           tintColor={BLACK}
         />
       )}
@@ -54,7 +54,7 @@ const MenuItem = ({ icon, title, rightText, onPress, showSwitch, isEnabled, onTo
 );
 
 const SectionTitle = ({ title }) => (
-  <Typography 
+  <Typography
     style={styles.sectionTitle}
     color={DARK_PURPLE}
     fontFamily={MEDIUM}
@@ -63,59 +63,43 @@ const SectionTitle = ({ title }) => (
   </Typography>
 );
 
-const Setting = () => {
+const Setting = ({ navigation }) => {
   const [notifications, setNotifications] = React.useState(true);
-const dispatch = useDispatch()
+  const dispatch = useDispatch()
   return (
     <View style={styles.container}>
       <HeaderComponent title="Settings" />
       <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.content}>
-        <SectionTitle title="Profile" />
-        <MenuItem 
-          icon={PROFILE}
-          title="Edit Profile"
-          onPress={() => {}}
-        />
-        <MenuItem 
-          icon={CHANGE_PASSWORD}
-          title="Change Password"
-          onPress={() => {}}
-        />
+        <View style={styles.content}>
+          <SectionTitle title="Profile" />
+          <MenuItem
+            icon={PROFILE}
+            title="Edit Profile"
+            onPress={() => { }}
+          />
+          <MenuItem
+            icon={CHANGE_PASSWORD}
+            title="Change Password"
+            onPress={() => { }}
+          />
 
-        {/* Bank Details Section */}
-        <SectionTitle title="Bank Details" />
-        <MenuItem 
-          icon={BANK}
-          title="Verify Bank Account"
-          onPress={() => {}}
-        />
-        <MenuItem 
-          icon={UPDATE}
-          title="Update Bank Info"
-          onPress={() => {}}
-        />
+          <SectionTitle title="Bank Details" />
+          <MenuItem
+            icon={BANK}
+            title="Verify Bank Account"
+            onPress={() => { }}
+          />
+          <MenuItem
+            icon={UPDATE}
+            title="Update Bank Info"
+            onPress={() => { }}
+          />
 
-        {/* Preferences Section */}
-        <SectionTitle title="Preferences" />
-        <MenuItem 
-          icon={LANGUAGE}
-          title="Language"
-          rightText="English"
-          onPress={() => {}}
-        />
-      
-        <MenuItem 
-          icon={NOTIFICATION}
-          title="Notifications"
-          showSwitch={true}
-          isEnabled={notifications}
-          onToggle={setNotifications}
-        />
+         
 
-        {/* Support Section */}
-        <SectionTitle title="Support" />
-        <MenuItem 
+         
+          {/* <SectionTitle title="Support" /> */}
+          {/* <MenuItem 
           icon={HELP}
           title="Help Center"
           onPress={() => {}}
@@ -124,36 +108,84 @@ const dispatch = useDispatch()
           icon={CONTACT}
           title="Contact Us"
           onPress={() => {}}
-        />
+        /> */}
 
-        {/* About Section */}
-        <SectionTitle title="About" />
-        <MenuItem 
-          icon={TERMS}
-          title="Terms & Conditions"
-          onPress={() => {}}
-        />
-        <MenuItem 
-          icon={PRIVACY}
-          title="Privacy Policy"
-          onPress={() => {}}
-        />
-        <MenuItem 
-          icon={VERSION}
-          title="App Version"
-          rightText="v1.0.2"
-        />
-      </View>
+          <SectionTitle title="About" />
+          <MenuItem
+            icon={TERMS}
+            title="Terms & Conditions"
+            onPress={() => {
+              navigation.navigate('WebUrl', { titleNames: 'Terms & Conditions' })
+
+            }}
+          />
+          <MenuItem
+            icon={PRIVACY}
+            title="Privacy Policy"
+            onPress={() => {
+              navigation.navigate('WebUrl', { titleNames: 'Privacy Policy' })
+            }}
+          />
+          <MenuItem
+            icon={ABOUT}
+            title="About Us"
+            onPress={() => {
+              navigation.navigate('WebUrl', { titleNames: 'About Us' })
+            }}
+          />
+          <MenuItem
+            icon={HOW_TO_PLAY}
+            title="How To Play"
+            onPress={() => {
+              navigation.navigate('WebUrl', { titleNames: 'HowToPlay' })
+            }}
+          />
+          <MenuItem
+            icon={POINTS_SYSTEM}
+            title="Points System"
+            onPress={() => {
+              navigation.navigate('WebUrl', { titleNames: 'Points System' })
+            }}
+          />
+          <MenuItem
+            icon={RESPONSIBLE}
+            title="Responsible Gaming"
+            onPress={() => {
+              navigation.navigate('WebUrl', { titleNames: 'Responsible Gaming' })
+            }}
+          />
+          <MenuItem
+            icon={LEGALITIES}
+            title="Legalities"
+            onPress={() => {
+              navigation.navigate('WebUrl', { titleNames: 'Legalities' })
+            }}
+          />
+          <MenuItem
+            icon={FAIR_PLAY}
+            title="Fair Play Policy"
+            onPress={() => {
+              navigation.navigate('WebUrl', { titleNames: 'Fair Play Policy' })
+            }}
+          />
+
+
+          <MenuItem
+            icon={VERSION}
+            title="App Version"
+            rightText="v1.0.2"
+          />
+        </View>
       </ScrollView>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.logoutButton}
         onPress={() => {
           dispatch(setUserToken(null));
         }}
       >
-        <Typography 
-          color={WHITE} 
+        <Typography
+          color={WHITE}
           fontFamily={SEMI_BOLD}
         >
           Log Out

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,28 +8,38 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
-import { BACK, NEXT, USER_IMG } from '../../Components/ImageAsstes';
+import { BACK, NEXT, STATIC_USER, USER_IMG } from '../../Components/ImageAsstes';
 import HeaderComponent from '../../Components/HeaderComponent';
 import Typography from '../../Components/Typography';
 import { BLACK, DARK_PURPLE, GREY, LIGHT_GREY, WHITE } from '../../Components/Colors';
 import { BOLD, MEDIUM, SEMI_BOLD } from '../../Components/AppFonts';
 import Icon from '../../Components/Icon';
+import { BASE_URL, GET_WITH_TOKEN } from '../../Backend/Backend';
+import Loader from '../../Components/Loader';
 
-const Profile = ({navigation}) => {
-  const userProfile = {
-    name: 'Alex Thompson',
-    id: 'GT7845962',
-    avatar: USER_IMG,
-    wallet: {
-      deposit: 2500,
-      winnings: 4750,
-    },
-    stats: {
-      games: 47,
-      won: 31,
-      winRate: 66,
-    },
-  };
+const Profile = ({ navigation }) => {
+  const [data, setData] = useState({})
+  const [isVisible, setIsVisible] = useState(false)
+  
+
+  const getProfileData = async () => {
+    try {
+      setIsVisible(true)
+      const response = await GET_WITH_TOKEN('user/profile')
+      if (response?.success === true) {
+        setIsVisible(false)
+        setData(response?.data)
+      } else {
+        setIsVisible(false)
+      }
+    } catch (error) {
+      setIsVisible(false)
+      console.log(error, '===error==');
+    }
+  }
+  useEffect(() => {
+    getProfileData()
+  }, [])
 
   const MenuItem = ({ icon, title, onPress }) => (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}
@@ -41,15 +51,17 @@ const Profile = ({navigation}) => {
       <Icon source={NEXT} size={10} />
     </TouchableOpacity>
   );
-
+  const walletBalance = Number(data?.winning_amount || 0) + Number(data?.cash_bonus || 0) + Number(data?.totaldeposit || 0)
+  const userImg = `${BASE_URL}${data?.logo}`
   return (
     <SafeAreaView style={styles.container}>
       <HeaderComponent title={'Profile'} />
+      <Loader visible={isVisible} />
       <ScrollView>
         <View style={styles.profileSection}>
-          <Image source={userProfile.avatar} style={styles.avatar} />
-          <Typography style={styles.name}>{userProfile.name}</Typography>
-          <Typography style={styles.userId}>ID: {userProfile.id}</Typography>
+          <Image source={userImg ? { uri: userImg } : STATIC_USER} style={[styles.avatar, { borderRadius: userImg ? 40 : 0, }]} />
+          <Typography style={styles.name}>{data?.username}</Typography>
+          {/* <Typography style={styles.userId}>ID: {userProfile.id}</Typography> */}
           <TouchableOpacity>
             <Typography style={styles.editButtonText}>Edit Profile</Typography>
           </TouchableOpacity>
@@ -64,17 +76,21 @@ const Profile = ({navigation}) => {
           </View>
           <View style={styles.balanceContainer}>
             <View style={styles.balanceBox}>
-              <Typography style={styles.balanceAmount}>₹{userProfile.wallet.deposit}</Typography>
+              <Typography style={styles.balanceAmount}>₹{walletBalance}</Typography>
               <Typography style={styles.balanceLabel}>Deposit</Typography>
             </View>
             <View style={styles.balanceBox}>
-              <Typography style={styles.balanceAmount}>₹{userProfile.wallet.winnings}</Typography>
+              <Typography style={styles.balanceAmount}>₹{data?.winning_amount}</Typography>
               <Typography style={styles.balanceLabel}>Winnings</Typography>
+            </View>
+            <View style={styles.balanceBox}>
+              <Typography style={styles.balanceAmount}>₹{data?.cash_bonus}</Typography>
+              <Typography style={styles.balanceLabel}>Bonus</Typography>
             </View>
           </View>
         </View>
 
-        <View style={styles.statsSection}>
+        {/* <View style={styles.statsSection}>
           <Typography style={styles.sectionTitle}>Gaming Stats</Typography>
           <View style={styles.statsContainer}>
             <View style={styles.statBox}>
@@ -90,16 +106,14 @@ const Profile = ({navigation}) => {
               <Typography style={styles.statLabel}>Win Rate</Typography>
             </View>
           </View>
-        </View>
+        </View> */}
 
         <View style={styles.menuSection}>
           <MenuItem title="Account Details" />
           <MenuItem title="Transaction History" />
-          <MenuItem title="Privacy & Security" />
-          <MenuItem title="Help & Support" />
-          <MenuItem title="Setting" onPress={()=>{
+          <MenuItem title="Setting" onPress={() => {
             navigation.navigate('Setting')
-          }}/>
+          }} />
         </View>
 
 
@@ -121,8 +135,9 @@ const styles = StyleSheet.create({
   avatar: {
     width: 80,
     height: 80,
-    borderRadius: 40,
+
     marginBottom: 8,
+    resizeMode: "cover"
   },
   name: {
     fontSize: 18,

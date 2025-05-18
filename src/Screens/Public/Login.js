@@ -129,10 +129,12 @@ const Login = () => {
               <Typography size={13} fontFamily={MEDIUM} style={styles.checkboxText}>
                 I have read and agree to MyBattle 11{' '}
                 <Typography size={13} fontFamily={MEDIUM} onPress={() => {
+                  navigation.navigate('WebUrl',{titleNames:'Terms & Conditions'})
                 }} style={styles.link}>Terms of Service</Typography>
                 <Typography size={13} fontFamily={MEDIUM}> and </Typography>
-                <Typography onPress={() => {
-                }} size={13} fontFamily={MEDIUM} style={styles.link}>
+                <Typography size={13} fontFamily={MEDIUM} style={styles.link} onPress={()=>{
+                  navigation.navigate('WebUrl',{titleNames:'Privacy Policy'})
+                }}>
                   Privacy Policy
                 </Typography>
               </Typography>

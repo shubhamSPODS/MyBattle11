@@ -48,6 +48,18 @@ export const CLASSIC_MODE = require('../assets/Images/ClassicMode.png')
 export const DICE = require('../assets/Images/dice.png')
 export const DICE_1= require('../assets/Images/dice1.png')
 export const DICE_2= require('../assets/Images/dice2.png')
+export const STATIC_USER= require('../assets/Images/StaticUser.png')
+export const ABOUT= require('../assets/Images/about.png')
+export const HOW_TO_PLAY= require('../assets/Images/how.png')
+export const POINTS_SYSTEM= require('../assets/Images/points.png')
+export const RESPONSIBLE= require('../assets/Images/responsible.png')
+export const LEGALITIES= require('../assets/Images/legal.png')
+export const FAIR_PLAY= require('../assets/Images/fairPlay.png')
+
+
+
+
+
 
 
 
