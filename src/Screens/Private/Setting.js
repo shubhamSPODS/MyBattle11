@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Switch, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderComponent from '../../Components/HeaderComponent';
 import Typography from '../../Components/Typography';
 import { BLACK, DARK_PURPLE, GREY, WHITE } from '../../Components/Colors';
@@ -64,7 +63,6 @@ const SectionTitle = ({ title }) => (
 );
 
 const Setting = ({ navigation }) => {
-  const [notifications, setNotifications] = React.useState(true);
   const dispatch = useDispatch()
   return (
     <View style={styles.container}>
@@ -75,13 +73,9 @@ const Setting = ({ navigation }) => {
           <MenuItem
             icon={PROFILE}
             title="Edit Profile"
-            onPress={() => { }}
+            onPress={() => {}}
           />
-          <MenuItem
-            icon={CHANGE_PASSWORD}
-            title="Change Password"
-            onPress={() => { }}
-          />
+      
 
           <SectionTitle title="Bank Details" />
           <MenuItem

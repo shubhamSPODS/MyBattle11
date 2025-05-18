@@ -53,13 +53,14 @@ const Profile = ({ navigation }) => {
   );
   const walletBalance = Number(data?.winning_amount || 0) + Number(data?.cash_bonus || 0) + Number(data?.totaldeposit || 0)
   const userImg = `${BASE_URL}${data?.logo}`
+  
   return (
     <SafeAreaView style={styles.container}>
       <HeaderComponent title={'Profile'} />
       <Loader visible={isVisible} />
       <ScrollView>
         <View style={styles.profileSection}>
-          <Image source={userImg ? { uri: userImg } : STATIC_USER} style={[styles.avatar, { borderRadius: userImg ? 40 : 0, }]} />
+          <Image source={!userImg ===undefined? { uri: userImg } : STATIC_USER} style={[styles.avatar, { borderRadius: userImg ? 40 : 0, }]} />
           <Typography style={styles.name}>{data?.username}</Typography>
           {/* <Typography style={styles.userId}>ID: {userProfile.id}</Typography> */}
           <TouchableOpacity>
@@ -70,7 +71,9 @@ const Profile = ({ navigation }) => {
         <View style={styles.walletSection}>
           <View style={styles.walletHeader}>
             <Typography style={styles.sectionTitle}>Wallet Balance</Typography>
-            <TouchableOpacity style={styles.addMoneyButton}>
+            <TouchableOpacity style={styles.addMoneyButton} onPress={()=>{
+              navigation.navigate('VerificationScreen')
+            }}>
               <Typography style={styles.addMoneyText}>Add Money</Typography>
             </TouchableOpacity>
           </View>

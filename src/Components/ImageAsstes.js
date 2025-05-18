@@ -55,6 +55,15 @@ export const POINTS_SYSTEM= require('../assets/Images/points.png')
 export const RESPONSIBLE= require('../assets/Images/responsible.png')
 export const LEGALITIES= require('../assets/Images/legal.png')
 export const FAIR_PLAY= require('../assets/Images/fairPlay.png')
+export const AADHAR= require('../assets/Images/Aadhar.png')
+export const CAMERA= require('../assets/Images/camera.png')
+export const MOBILE= require('../assets/Images/Mobile.png')
+export const GALLARY= require('../assets/Images/picture.png')
+export const CLOSE= require('../assets/Images/close.png')
+export const CAMERA_1= require('../assets/Images/camera1.png')
+
+
+
 
 
 

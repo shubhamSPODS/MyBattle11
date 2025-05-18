@@ -3,7 +3,6 @@ import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Login from '../Screens/Public/Login';
 import Otp from '../Screens/Public/Otp';
-import HomeScreen from '../Screens/Private/HomeScreen';
 import TabNavigation from './TabNavigation';
 import LudoGameMode from '../Screens/Private/LudoGameScreens/LudoGameMode';
 import LudoTable from '../Screens/Private/LudoGameScreens/LudoTable';
@@ -18,7 +17,8 @@ import SelectContestsScreen from '../Screens/Private/FantasyGameScreens/SelectCo
 import ScoreboardScreen from '../Screens/Private/FantasyGameScreens/ScoreboardScreen';
 import ContestDetailsScreen from '../Screens/Private/FantasyGameScreens/ContestDetailsScreen';
 import WebUrl from '../Screens/WebUrl';
-import ChangePassword from '../Screens/Private/ChangePassword';
+import VerificationScreen from '../Screens/Private/VerificationScreen';
+import VerifyBankAccountScreen from '../Screens/Private/VerifyBankAccountScreen';
 
 export const AuthStack = () => {
     const Stack = createNativeStackNavigator();
@@ -56,7 +56,10 @@ export const HomeStack = () => {
             <Stack.Screen name="ScoreboardScreen" component={ScoreboardScreen} />
             <Stack.Screen name="ContestDetailsScreen" component={ContestDetailsScreen} />
             <Stack.Screen name='WebUrl' component={WebUrl}/>
-            <Stack.Screen name='ChangePassword' component={ChangePassword}/>
+            <Stack.Screen name='VerificationScreen' component={VerificationScreen}/>
+            <Stack.Screen name='VerifyBankAccountScreen' component={VerifyBankAccountScreen}/>
+           
+            
 
         </Stack.Navigator>
 

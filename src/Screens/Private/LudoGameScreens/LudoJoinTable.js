@@ -12,9 +12,9 @@ import { useSelector } from 'react-redux';
 import { BASE_URL, GET_WITH_TOKEN } from '../../../Backend/Backend';
 import Toast from 'react-native-simple-toast';
 import Loader from '../../../Components/Loader';
-import { launchUnityWithData } from 'react-native-unity-launcher';
+import { launchUnityWithData ,launchUnityWithDataCallback} from 'react-native-unity-launcher';
 
-const LudoJoinTable = ({ route }) => {
+const LudoJoinTable = ({ route,navigation }) => {
   const userData = useSelector((state) => state.auth.user);
   const userToken = useSelector((state) => state.auth?.token);
   const [matchId, setMatchId] = useState('')
@@ -36,14 +36,14 @@ const LudoJoinTable = ({ route }) => {
       }
     };
   }, []);
-console.log(routeData?._id,'=routeData?._id');
+  console.log(routeData?._id, '=routeData?._id');
 
   useEffect(() => {
     if (!!matchId) {
       onMatchIdFound();
     }
   }, [matchId]);
-   
+
 
   const setupSocketConnection = () => {
     let url = `${BASE_URL}server/matchmaking`
@@ -60,7 +60,6 @@ console.log(routeData?._id,'=routeData?._id');
       },
       forceNew: true,
     });
-    console.log(routeData?._id, 'routeData?._id');
 
     socket.current.on('connect', () => {
       console.log('✅ Socket connected');
@@ -191,8 +190,6 @@ console.log(routeData?._id,'=routeData?._id');
   const onMatchIdFound = async () => {
     try {
       const matchFoundRes = await GET_WITH_TOKEN(`game/${matchId}`);
-      console.log(matchFoundRes, '==response');
-
       if (matchFoundRes?.success === true) {
         const otherPlayerIds = matchFoundRes?.data?.players?.filter(
           playerId => playerId !== userData?._id
@@ -201,7 +198,6 @@ console.log(routeData?._id,'=routeData?._id');
           otherPlayerIds.map(async (playerId) => {
             try {
               const profileRes = await GET_WITH_TOKEN(`user/getprofile?user_id=${playerId}`);
-              console.log(profileRes, '==response>>', `user/getprofile?user_id=${playerId}`);
 
               if (profileRes?.success) {
                 return {
@@ -222,7 +218,11 @@ console.log(routeData?._id,'=routeData?._id');
         setPlayers(validPlayers);
         if (!!validPlayers) {
 
-          launchUnityWithData(`${BASE_URL}`, `${BASE_URL}`, userToken, 'ludo', matchId)
+          launchUnityWithDataCallback(`${BASE_URL}`, `${BASE_URL}`, userToken, 'ludo', matchId,null,() => {
+            console.log('Returned from Unity');
+            navigation.goBack()
+            // Do something after returning from Unity
+          })
 
         }
 
