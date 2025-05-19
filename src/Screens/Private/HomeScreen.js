@@ -13,9 +13,7 @@ import { useDispatch } from 'react-redux'
 const HomeScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     return (
-
         <View style={{ flex: 1, backgroundColor: WHITE }}>
-
             <HomeHeader />
             <ScrollView>
                 <Image
@@ -32,8 +30,7 @@ const HomeScreen = ({ navigation }) => {
                             { id: 1, img: REWARDS, text: "Rewards" },
                             { id: 2, img: REFER, text: "Refers" },
                             { id: 3, img: WINNERS, text: "Winners" },
-                            { id: 4, img: FANTASY_BANNER, text: "Create Team" },
-                            { id: 5, img: FANTASY_BANNER, text: "Contests" },
+                         
                         ]}
                         horizontal
                         showsHorizontalScrollIndicator={false}

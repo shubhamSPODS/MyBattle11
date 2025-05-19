@@ -6,15 +6,15 @@ import Typography, { FULL_WIDTH } from '../../../Components/Typography';
 import { MEDIUM, REGULAR, SEMI_BOLD } from '../../../Components/AppFonts';
 import CustomButton from '../../../Components/CustomButton';
 import Icon from '../../../Components/Icon';
-import { DICE, DICE_2, LUDO_IMG, PROFILE2, SAFE_SECURE, SECURE, SUPPORT, USER_IMG, WATCH } from '../../../Components/ImageAsstes';
+import { DICE, DICE_2, LUDO_IMG, PROFILE2, SAFE_SECURE, SECURE, STATIC_USER, SUPPORT, USER_IMG, WATCH } from '../../../Components/ImageAsstes';
 import io from 'socket.io-client';
 import { useSelector } from 'react-redux';
 import { BASE_URL, GET_WITH_TOKEN } from '../../../Backend/Backend';
 import Toast from 'react-native-simple-toast';
 import Loader from '../../../Components/Loader';
-import { launchUnityWithData ,launchUnityWithDataCallback} from 'react-native-unity-launcher';
+import { launchUnityWithData, launchUnityWithDataCallback } from 'react-native-unity-launcher';
 
-const LudoJoinTable = ({ route,navigation }) => {
+const LudoJoinTable = ({ route, navigation }) => {
   const userData = useSelector((state) => state.auth.user);
   const userToken = useSelector((state) => state.auth?.token);
   const [matchId, setMatchId] = useState('')
@@ -24,6 +24,32 @@ const LudoJoinTable = ({ route,navigation }) => {
   const [players, setPlayers] = useState([]);
   const [isJoining, setIsJoining] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isWaitingForUnity, setIsWaitingForUnity] = useState(false);
+  const [countdown, setCountdown] = useState(10);
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
+    if (isWaitingForUnity) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    } else {
+      setCountdown(10);
+    }
+  }, [isWaitingForUnity]);
 
   useEffect(() => {
     return () => {
@@ -143,7 +169,6 @@ const LudoJoinTable = ({ route,navigation }) => {
       setIsSocketConnected(true);
       setTimeout(() => {
         if (socket.current?.connected) {
-          console.log('🔄 Re-emitting get_players after reconnection');
           socket.current.emit('get_players', {
             playerId: userData?._id,
             contestId: routeData?._id,
@@ -203,7 +228,7 @@ const LudoJoinTable = ({ route,navigation }) => {
                 return {
                   name: profileRes?.data?.username || 'Player',
                   _id: profileRes?.data?.id,
-                  avatar: `${BASE_URL}${profileRes?.data?.logo}` || USER_IMG,
+                  avatar: !profileRes?.data?.logo ? STATIC_USER : `${BASE_URL}${profileRes?.data?.logo}`,
                   joinedAt: 'Just now'
                 };
               }
@@ -217,21 +242,21 @@ const LudoJoinTable = ({ route,navigation }) => {
         const validPlayers = playerProfiles?.filter(player => player !== null);
         setPlayers(validPlayers);
         if (!!validPlayers) {
+          setIsLoading(false);
+          setIsWaitingForUnity(true);
 
-          launchUnityWithDataCallback(`${BASE_URL}`, `${BASE_URL}`, userToken, 'ludo', matchId,null,() => {
-            console.log('Returned from Unity');
-            navigation.goBack()
-            // Do something after returning from Unity
-          })
-
+          setTimeout(() => {
+            launchUnityWithDataCallback(`${BASE_URL}`, `${BASE_URL}`, userToken, 'ludo', matchId, null, () => {
+              console.log('Returned from Unity');
+              navigation.goBack()
+            });
+          }, 10000);
         }
-
-
       }
     } catch (error) {
       console.log(error, '==error');
-    } finally {
       setIsLoading(false);
+      setIsWaitingForUnity(false);
     }
   };
 
@@ -265,12 +290,15 @@ const LudoJoinTable = ({ route,navigation }) => {
           </View>
         </View>
       </View>
-
+    
       <View style={styles.card}>
         <Typography size={16} fontFamily={SEMI_BOLD} style={{ marginBottom: 10 }}>Current Players</Typography>
-        <View style={styles.playerItem}>
+        <View style={[
+          styles.playerItem,
+          isWaitingForUnity && styles.playerItemHighlight
+        ]}>
           <Image
-            source={{ uri: `${BASE_URL}${userData?.logo}` || USER_IMG }}
+            source={!userData?.logo ? STATIC_USER : { uri: `${BASE_URL}${userData?.logo}` }}
             style={styles.playerAvatar}
           />
           <View>
@@ -279,10 +307,11 @@ const LudoJoinTable = ({ route,navigation }) => {
           </View>
         </View>
         {players?.map((item, index) => (
-          <View key={index} style={styles.playerItem}>
-            {console.log(item, '==item>>')
-            }
-            <Image source={{ uri: item?.avatar } || USER_IMG} style={styles.playerAvatar} />
+          <View key={index} style={[
+            styles.playerItem,
+            isWaitingForUnity && styles.playerItemHighlight
+          ]}>
+            <Image source={item?.avatar} style={styles.playerAvatar} />
             <View>
               <Typography size={14} fontFamily={SEMI_BOLD}>{item?.name}</Typography>
               <Typography size={12} color={GREY} fontFamily={MEDIUM}>Joined {item?.joinedAt}</Typography>
@@ -290,6 +319,9 @@ const LudoJoinTable = ({ route,navigation }) => {
           </View>
         ))}
       </View>
+
+    
+
       <View style={styles.card}>
         <View style={styles.balanceRow}>
           <Typography size={14} fontFamily={MEDIUM}>Wallet Balance</Typography>
@@ -306,6 +338,8 @@ const LudoJoinTable = ({ route,navigation }) => {
           <Typography size={14} fontFamily={SEMI_BOLD} color="#22C55E">{`₹${balanceAfterJoin}`}</Typography>
         </View>
       </View>
+ 
+     
 
       <View style={styles.footer}>
         <View style={styles.footerInfo}>
@@ -318,14 +352,15 @@ const LudoJoinTable = ({ route,navigation }) => {
         </View>
       </View>
 
+
       <CustomButton
-        title={isJoining ? "Waiting for Match..." : "Join Table Now"}
+        title={isWaitingForUnity ? formatTime(countdown) : (isJoining ? "Waiting for Match..." : "Join Table Now")}
         style={styles.joinButton}
         onPress={handleJoinTable}
-        disabled={isJoining}
+        disabled={isJoining || isWaitingForUnity}
       />
 
-      <Loader visible={isLoading} />
+      <Loader visible={isLoading} textAppear />
     </View>
   );
 };
@@ -406,5 +441,41 @@ const styles = StyleSheet.create({
     bottom: 16,
     backgroundColor: GOLDEN,
     width: FULL_WIDTH - 32,
+  },
+  countdownContainer: {
+    position: 'absolute',
+    bottom: 80,
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  countdownText: {
+    textShadowColor: 'rgba(255, 215, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  playerItemHighlight: {
+    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 8,
+  },
+  matchFoundContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    padding: 20,
+    borderRadius: 12,
+    marginHorizontal: 16,
+    width:FULL_WIDTH-50,alignSelf:"center"
+  },
+  matchFoundText: {
+    marginTop: 10,
+    textAlign: 'center',
+    textShadowColor: 'rgba(255, 215, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
 });
