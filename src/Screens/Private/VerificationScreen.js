@@ -5,14 +5,35 @@ import { AADHAR, BANK, CAMERA, CAMERA_1, MOBILE, USER_IMG } from '../../Componen
 import HeaderComponent from '../../Components/HeaderComponent';
 import { LIGHT_GREY } from '../../Components/Colors';
 import ImageUploadModal from '../../Components/ImageUploadModal';
+import Toast from 'react-native-simple-toast';
+import { POST_WITH_TOKEN_FORMDATA } from '../../Backend/Backend';
 
 const VerificationScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false)
-  const handleMobileVerify = () => { console.log('Mobile Verify pressed'); };
+  const [imageData, setImageData] = useState(null);
   const handleAadhaarVerify = () => {navigation.navigate('AadharVerification') };
-  const handlePANVerify = () => { console.log('PAN Verify pressed'); };
+  const handlePANVerify = () => {navigation.navigate('PanVerification') };
   const handleBankVerify = () => { navigation.navigate('VerifyBankAccountScreen') };
   const handleSelfieVerify = () => { setModalVisible(true) };
+  const onSelfieVerify = async () => {
+    try {
+      if (!imageData) {
+        Toast.show('Please select an image first');
+        return;
+      }
+      const uploadData = new FormData();
+      uploadData.append('file', imageData);
+      const response = await POST_WITH_TOKEN_FORMDATA('upload', uploadData);
+      if (response?.success === true) {
+        Toast.show(response?.message);
+      } else {
+        Toast.show(response?.message);
+      }
+    } catch (error) {
+      Toast.show(error?.message);
+      console.log(error, '==error>>');
+    }
+  }
 
 
   return (
@@ -21,10 +42,15 @@ const VerificationScreen = ({ navigation }) => {
       <ImageUploadModal
         visible={modalVisible}
         onImagePicked={e => {
-          console.log(e, '==e');
+          setImageData({
+            uri: e?.path,
+            name: e?.filename || 'image.jpg',
+            type: e?.mime,
+          });
+          onSelfieVerify();
         }}
         onClose={() => {
-          setModalVisible(false)
+          setModalVisible(false);
         }}
       />
       <View style={styles.content}>

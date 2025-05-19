@@ -10,8 +10,6 @@ import { WHITE } from './Colors';
 const ImageUploadModal = ({ visible, onClose, onImagePicked }) => {
     const openCamera = async () => {
         try {
-            console.log('open camera');
-            
             const images = await ImagePicker.openCamera({
                 width: 300,
                 height: 400,
@@ -29,8 +27,10 @@ const ImageUploadModal = ({ visible, onClose, onImagePicked }) => {
     const openGallery = async () => {
         try {
             const images = await ImagePicker.openPicker({
-                multiple: true,
-                mediaType: 'photo'
+                width: 300,
+                height: 400,
+                multiple: false,
+                cropping: true,
             });
             onImagePicked(images);
             onClose();

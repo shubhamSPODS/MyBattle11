@@ -3,42 +3,82 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import CommonButton from '../../Components/CommonButton';
 import HeaderComponent from '../../Components/HeaderComponent';
 import { WHITE, PURPLE } from '../../Components/Colors';
-import Typography, { FULL_WIDTH } from '../../Components/Typography';
-import { MEDIUM } from '../../Components/AppFonts';
+import  { FULL_WIDTH } from '../../Components/Typography';
 import CustomTextInput from '../../Components/CustomTextInput';
-import ImageUploadModal from '../../Components/ImageUploadModal';
+import Toast from 'react-native-simple-toast';
+import { ifsclNumber, POST_WITH_TOKEN } from '../../Backend/Backend';
+import Loader from '../../Components/Loader';
 
 const VerifyBankAccountScreen = () => {
+  const [visible,setVisible] = useState(false)
   const [name, setName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [confirmAccountNumber, setConfirmAccountNumber] = useState('');
   const [ifscCode, setIfscCode] = useState('');
   const [bankName, setBankName] = useState('');
   const [branchName, setBranchName] = useState('');
-
-  const handleVerify = () => {
-    console.log('Verifying Bank Account');
+  const handleVerify = async() => {
+   try {
+    if (!name) {
+      Toast.show('Please enter your name.')
+    }
+    else if (!accountNumber) {
+      Toast.show('Please enter your account number.')
+    } else if (confirmAccountNumber != accountNumber) {
+      Toast.show('Please check confirm account number.')
+    } else if (!ifsclNumber(ifscCode)) {
+      Toast.show('Please enter vaild ifsc code.')
+    } else if (!bankName) {
+      Toast.show('Please enter bank name.')
+    } else if (!branchName) {
+      Toast.show('Please enter branch name.')
+    } 
+    else {
+      const data = {
+          account_number: accountNumber,
+          ifsc_code: ifscCode,
+          bank_name: bankName,
+          branch_name: branchName,
+          name: name
+      }
+      setVisible(true)
+      const response = await POST_WITH_TOKEN('user/verifybankpenny',data)
+      if (response?.success ===true) {
+        setVisible(false)
+        Toast.show(response?.message)
+      }else{
+        setVisible(false)
+        Toast.show(response?.message)
+      }
+    }
+    
+   } catch (error) {
+    setVisible(false)
+    Toast.show(error?.message)
+     console.log(error,'==err>>');
+     
+   }
   };
 
   return (
     <View style={styles.container}>
       <HeaderComponent title="Verify Bank Account" />
-    
+    <Loader visible={visible}/>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <CustomTextInput
           heading='Name'
           label
           placeholder="Enter Your Name"
           value={name}
-          onChangeTypography={setName}
+          onChangeText={setName}
           labelStyle={{ marginTop: 10, marginLeft: 30 }} containerStyle={{ width: FULL_WIDTH - 50 }}
         />
         <CustomTextInput
           heading='Account number'
           label
           placeholder="Enter Account Number"
-          value={name}
-          onChangeTypography={setName}
+          value={accountNumber}
+          onChangeText={setAccountNumber}
           labelStyle={{ marginTop: 10, marginLeft: 30 }}
           containerStyle={{ width: FULL_WIDTH - 50 }}
         />
@@ -47,8 +87,8 @@ const VerifyBankAccountScreen = () => {
           heading='Confirm Account Number'
           label
           placeholder="Confirm Account Number"
-          value={name}
-          onChangeTypography={setName}
+          value={confirmAccountNumber}
+          onChangeText={setConfirmAccountNumber}
           labelStyle={{ marginTop: 10, marginLeft: 30 }}
           containerStyle={{ width: FULL_WIDTH - 50 }}
         />
@@ -56,8 +96,8 @@ const VerifyBankAccountScreen = () => {
           heading='IFSC Code'
           label
           placeholder="Enter IFSC Code"
-          value={name}
-          onChangeTypography={setName}
+          value={ifscCode}
+          onChangeText={setIfscCode}
           labelStyle={{ marginTop: 10, marginLeft: 30 }}
           containerStyle={{ width: FULL_WIDTH - 50 }}
         />
@@ -65,8 +105,8 @@ const VerifyBankAccountScreen = () => {
           heading='Bank Name'
           label
           placeholder="Enter Bank Name"
-          value={name}
-          onChangeTypography={setName}
+          value={bankName}
+          onChangeText={setBankName}
           labelStyle={{ marginTop: 10, marginLeft: 30 }}
           containerStyle={{ width: FULL_WIDTH - 50 }}
         />
@@ -74,8 +114,8 @@ const VerifyBankAccountScreen = () => {
           heading='Branch Name'
           label
           placeholder="Enter Branch Name"
-          value={name}
-          onChangeTypography={setName}
+          value={branchName}
+          onChangeText={setBranchName}
           labelStyle={{ marginTop: 10, marginLeft: 30 }}
           containerStyle={{ width: FULL_WIDTH - 50 }}
         />

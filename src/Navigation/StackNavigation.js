@@ -18,6 +18,7 @@ import AadharVerification from '../Screens/Private/AadharVerification';
 import GameTable from '../Screens/Private/Shared/GameTable';
 import GameJoinTable from '../Screens/Private/Shared/GameJoinTable';
 import LudoGameMode from '../Screens/Private/LudoGameScreens/LudoGameMode';
+import PanVerification from '../Screens/Private/PanVerification';
 
 export const AuthStack = () => {
     const Stack = createNativeStackNavigator();
@@ -56,8 +57,10 @@ export const HomeStack = () => {
             <Stack.Screen name='VerificationScreen' component={VerificationScreen} />
             <Stack.Screen name='VerifyBankAccountScreen' component={VerifyBankAccountScreen} />
             <Stack.Screen name='AadharVerification' component={AadharVerification} />
+            <Stack.Screen name='PanVerification' component={PanVerification} />
 
 
+            
 
 
 
