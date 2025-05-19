@@ -19,6 +19,7 @@ import ContestDetailsScreen from '../Screens/Private/FantasyGameScreens/ContestD
 import WebUrl from '../Screens/WebUrl';
 import VerificationScreen from '../Screens/Private/VerificationScreen';
 import VerifyBankAccountScreen from '../Screens/Private/VerifyBankAccountScreen';
+import AadharVerification from '../Screens/Private/AadharVerification';
 
 export const AuthStack = () => {
     const Stack = createNativeStackNavigator();
@@ -58,6 +59,9 @@ export const HomeStack = () => {
             <Stack.Screen name='WebUrl' component={WebUrl}/>
             <Stack.Screen name='VerificationScreen' component={VerificationScreen}/>
             <Stack.Screen name='VerifyBankAccountScreen' component={VerifyBankAccountScreen}/>
+            <Stack.Screen name='AadharVerification' component={AadharVerification}/>
+
+            
            
             
 

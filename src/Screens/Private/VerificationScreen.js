@@ -9,7 +9,7 @@ import ImageUploadModal from '../../Components/ImageUploadModal';
 const VerificationScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const handleMobileVerify = () => { console.log('Mobile Verify pressed'); };
-  const handleAadhaarVerify = () => { console.log('Aadhaar Verify pressed'); };
+  const handleAadhaarVerify = () => {navigation.navigate('AadharVerification') };
   const handlePANVerify = () => { console.log('PAN Verify pressed'); };
   const handleBankVerify = () => { navigation.navigate('VerifyBankAccountScreen') };
   const handleSelfieVerify = () => { setModalVisible(true) };

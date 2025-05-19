@@ -53,7 +53,9 @@ const LudoTable = ({ navigation, route }) => {
     const getTableData = useCallback(async () => {
         try {
             setVisible(true)
-            const response = await GET_WITH_TOKEN('table');
+            const response = await GET_WITH_TOKEN(`table`);
+            console.log(response,'==rsponse');
+            
             if (response?.success === true) {
                 setVisible(false)
                 const filterData = response?.data?.filter(item => item?.gameMode === routeData);

@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native'
 const gameData = [
     {
         id: '1',
-        title: 'Points Rummy',
+        title: 'Points',
         description: 'Quick single-round game with instant results',
         priceRange: '₹2 - ₹10,000',
         players: '2-6 Players',
@@ -20,7 +20,7 @@ const gameData = [
     },
     {
         id: '2',
-        title: 'Pool Rummy',
+        title: 'Deals',
         description: 'Multiple rounds until one winner emerges',
         priceRange: '₹50 - ₹1,000',
         players: '2-6 Players',
@@ -28,7 +28,15 @@ const gameData = [
     },
     {
         id: '3',
-        title: 'Deals Rummy',
+        title: '101 Pool',
+        description: 'Fixed number of deals with cumulative scores',
+        priceRange: '₹25 - ₹500',
+        players: '2-4 Players',
+        icon: SECURE
+    },
+    {
+        id: '4',
+        title: '201 Pool',
         description: 'Fixed number of deals with cumulative scores',
         priceRange: '₹25 - ₹500',
         players: '2-4 Players',
@@ -51,19 +59,12 @@ const GameModeCard = ({ title, description, priceRange, players, icon }) => {
                 <Icon source={icon} size={24} tintColor={DARK_PURPLE} />
             </View>
 
-            <View style={styles.cardInfo}>
-                <Typography size={14} color={GREY} fontFamily={MEDIUM}>
-                    {priceRange}
-                </Typography>
-                <Typography size={14} color={GREY} fontFamily={MEDIUM}>
-                    {players}
-                </Typography>
-            </View>
 
             <CustomButton
                 title="Play Now"
                 style={styles.playButton}
                 onPress={() => {
+                    navigation.navigate('LudoGameMode')
                 }}
             />
         </View>
@@ -85,27 +86,16 @@ const RummyGameModes = () => {
         />
     )
 
-    const renderFooter = () => (
-        <CustomButton
-            title="⚡ Quick Join Random Table"
-            style={styles.quickJoinButton}
-            onPress={() => {
-                navigation.navigate('RummyPoolTables')
-            }}
-        />
-    )
 
     return (
         <View style={styles.container}>
           <HeaderComponent title={'Select Game Mode'}/>
-
             <FlatList
                 data={gameData}
                 renderItem={renderGameCard}
                 keyExtractor={item => item.id}
                 contentContainerStyle={styles.content}
                 showsVerticalScrollIndicator={false}
-                ListFooterComponent={renderFooter}
             />
 
 
@@ -182,6 +172,8 @@ const styles = StyleSheet.create({
     playButton: {
         backgroundColor: DARK_PURPLE,
         marginTop: 8,
+        width:FULL_WIDTH-50,
+        left:0
     },
 
 

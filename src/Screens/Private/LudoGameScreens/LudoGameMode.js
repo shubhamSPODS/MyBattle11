@@ -15,7 +15,7 @@ const LudoGameMode = () => {
         {
             id: 0,
             name: 'Classic',
-            description: `Goal: Standard Ludo rules apply.\nTwist: Win games to earn real or virtual money.\nStrategy: Focus on capturing opponents and reaching home faster to win rewards.`,
+            description: `Goal: Standard Ludo rules apply.\nTwist: Win games to earn real.\nStrategy: Focus on capturing opponents and reaching home faster to win rewards.`,
             img: DICE,
             gameMode: 'Classic',
         },

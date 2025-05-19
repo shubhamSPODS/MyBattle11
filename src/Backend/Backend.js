@@ -122,3 +122,13 @@ export const validateMobile = (number) => {
     const expression = /^[0-9]*$/;
     return expression.test(number);
   };
+
+  export const formatAadharNumber = (aadharNumber) => {
+    const cleanNumber = aadharNumber.replace(/\D/g, '');
+    const formattedNumber = cleanNumber.replace(/(.{4})/g, '$1 ');
+    return formattedNumber.trim();
+  };
+  export const checkValidAdharCardNumber = (adharNumber) => {
+    let regex = new RegExp(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/);
+    return regex.test(adharNumber);
+  };
