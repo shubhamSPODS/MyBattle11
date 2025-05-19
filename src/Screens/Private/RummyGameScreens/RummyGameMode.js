@@ -13,7 +13,7 @@ const gameData = [
     {
         id: '1',
         title: 'Points',
-        description: 'Quick single-round game with instant results',
+        description: `Quick & rewarding \n\nHow it works: Each point has a fixed value. Win by declaring first — earn chips based on opponents’ total points.`,
         priceRange: '₹2 - ₹10,000',
         players: '2-6 Players',
         icon: PRIZE 
@@ -21,7 +21,7 @@ const gameData = [
     {
         id: '2',
         title: 'Deals',
-        description: 'Multiple rounds until one winner emerges',
+        description: `Fixed deals, big stakes \n\nHow it works: Play a set number of deals. The player with the most chips at the end wins.`,
         priceRange: '₹50 - ₹1,000',
         players: '2-6 Players',
         icon: POOL
@@ -29,7 +29,7 @@ const gameData = [
     {
         id: '3',
         title: '101 Pool',
-        description: 'Fixed number of deals with cumulative scores',
+        description: `Fast knockout mode \n\nHow it works: Players are out once they cross 101 points. Last player remaining wins the game.`,
         priceRange: '₹25 - ₹500',
         players: '2-4 Players',
         icon: SECURE
@@ -37,7 +37,7 @@ const gameData = [
     {
         id: '4',
         title: '201 Pool',
-        description: 'Fixed number of deals with cumulative scores',
+        description: `Longer, strategic play \n\nHow it works: Similar to 101, but elimination is after 201 points. Stay below the limit to win`,
         priceRange: '₹25 - ₹500',
         players: '2-4 Players',
         icon: SECURE

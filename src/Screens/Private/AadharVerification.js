@@ -9,13 +9,21 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { BLACK, DARK_PURPLE, GOLDEN, GREY, LIGHT_GREY, WHITE } from '../../Components/Colors'
 import moment from 'moment'
 import Icon from '../../Components/Icon'
-import { checkValidAdharCardNumber, formatAadharNumber } from '../../Backend/Backend'
+import { checkValidAdharCardNumber, formatAadharNumber, POST_WITH_TOKEN } from '../../Backend/Backend'
 import Checkbox from '../../Components/CheckBox'
+import Toast from 'react-native-simple-toast';
 import CommonButton from '../../Components/CommonButton'
+import { useSelector } from 'react-redux'
+import Loader from '../../Components/Loader'
 
 const AadharVerification = () => {
+    const userToken = useSelector((state) => state.auth?.user);
+    console.log(userToken, '==token');
+    const [submitData, setSubmitData] = useState({})
     const [name, setName] = useState('');
     const [dob, setDob] = useState('');
+    const [otp, setOtp] = useState('');
+    const [visible, setVisible] = useState(false)
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const hideDatePicker = () => {
         setDatePickerVisibility(false);
@@ -25,10 +33,85 @@ const AadharVerification = () => {
         setDob(moment(date).format('DD/MM/YYYY'));
         hideDatePicker();
     };
+    const sendOtp = async () => {
+        try {
+            if (!formatAadharNumber(name)) {
+                Toast.show('Please enter adhaar number.');
+            }
+            else if (!checkValidAdharCardNumber(name.replace(/\s/g, ''))) {
+                Toast.show('Please enter vaild adhaar number.');
+            } else if (!dob) {
+                Toast.show('Please enter vaild DOB');
+            } else {
+                const data = {
+                    adhar_no: name.replace(/\s/g, ''),
+                };
+                setVisible(true)
+                const responseOtp = await POST_WITH_TOKEN('user/addadharotp', data)
+                console.log(responseOtp, '==respose');
+                if (responseOtp?.success === true) {
+                    setVisible(false)
+                    setSubmitData(responseOtp?.data)
+                    Toast.show(responseOtp?.message)
+                } else {
+                    setVisible(false)
+                    Toast.show(responseOtp?.message)
+                }
+
+            }
+        } catch (error) {
+            setVisible(false)
+            console.log(error, '==errror');
+
+        }
+
+    };
+
+
+    const onSubmit = async () => {
+        try {
+            if (!formatAadharNumber(name)) {
+                Toast.show('Please enter adhaar number.');
+            }
+            else if (!checkValidAdharCardNumber(name.replace(/\s/g, ''))) {
+                Toast.show('Please enter vaild adhaar number');
+            } else if (!dob) {
+                Toast.show('Please enter vaild DOB');
+            } else if (!otp) {
+                Toast.show('Please enter vaild OTP');
+            } else {
+                let data = {
+                    request_id: submitData?.request_id,
+                    otp: otp,
+                    task_id: submitData?.task_id,
+                    adhar_no: name.replace(/\s/g, ''),
+                    dob: dob
+                        .split('/')
+                        .map(part => part.replace(/^0+/, ''))
+                        .join('/'),
+                };
+                setVisible(true)
+                const response = await POST_WITH_TOKEN('user/verifyaadhar', data)
+                if (response?.success === true) {
+                    setVisible(false)
+                    Toast.show(response?.message)
+                } else {
+                    setVisible(false)
+                    Toast.show(response?.message)
+                }
+            }
+        } catch (error) {
+            setVisible(false)
+            console.log(error, '==error');
+
+        }
+
+    };
 
     return (
         <View style={{ flex: 1 }}>
             <HeaderComponent title={'Aadhar Verification'} />
+            <Loader visible={visible} />
             <ScrollView style={styles.scrollViewContent}>
                 <Image
                     source={BANNER_AADHAR}
@@ -46,12 +129,11 @@ const AadharVerification = () => {
                     />
                 </View>
 
-                <Typography size={13} color={GREY} fontFamily={MEDIUM} style={{ marginLeft: 10 }}>{'Aadhar Numer'}</Typography>
+                <Typography size={13} color={GREY} fontFamily={MEDIUM} style={{ marginLeft: 10 }}>Aadhar Numer</Typography>
 
                 <View style={styles.inputContainer}>
 
                     <TextInput
-                        allowFontScaling={false}
                         placeholder={'Adhaar Number'}
                         placeholderTextColor={GREY}
                         style={styles.inputStyle}
@@ -69,7 +151,7 @@ const AadharVerification = () => {
                     ) : (
                         <></>
                     )}
-                </View>c
+                </View>
 
                 <DateTimePickerModal
                     isVisible={isDatePickerVisible}
@@ -101,9 +183,14 @@ const AadharVerification = () => {
                         style={{ ...styles.inputStyle, flex: 1, marginRight: 10 }}
                         keyboardType={'number-pad'}
                         maxLength={6}
+                        value={otp}
+                        onChangeText={e => {
+                            setOtp(e)
+                        }}
                     />
                     <TouchableOpacity
                         style={styles.sendOtpButton}
+                        onPress={sendOtp}
                     >
                         <Typography size={12} color={WHITE} fontFamily={SEMI_BOLD}>
                             SEND OTP
@@ -118,20 +205,20 @@ const AadharVerification = () => {
                 </View>
 
                 <View style={styles.commonFlow}>
-                    <Checkbox value={true}  />
+                    <Checkbox value={true} />
                     <Typography size={14} style={styles.commonText} fontFamily={MEDIUM}>
                         {`Users must not be residing in restricted states.To know more, read Terms & conditions.`}
                     </Typography>
                 </View>
                 <View style={styles.commonFlow}>
-                    <Checkbox value={true}  />
+                    <Checkbox value={true} />
                     <Typography size={14} style={styles.commonText} fontFamily={MEDIUM}>
                         {`I hereby confirm that my attached documents are credible and binding.`}
                     </Typography>
                 </View>
-                
+
             </ScrollView>
-            <CommonButton title={'Submit'}/>
+            <CommonButton title={'Submit'} onPress={onSubmit} />
 
         </View>
     )
@@ -142,17 +229,18 @@ export default AadharVerification
 const styles = StyleSheet.create({
     commonFlow: {
         flexDirection: 'row',
-        marginTop:10
+        marginTop: 10
     },
     commonText: {
         flex: 1,
-        marginLeft:10,
-        marginTop:10
+        marginLeft: 10,
+        marginTop: 10
     },
     inputStyle: {
         fontSize: 13,
         fontFamily: REGULAR,
         color: GREY,
+        width: "90%"
     },
     box: {
         borderColor: '#002E610F',
