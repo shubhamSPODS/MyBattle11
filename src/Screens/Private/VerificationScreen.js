@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 import VerificationItem from '../../Components/VerificationItem';
 import { AADHAR, BANK, CAMERA, CAMERA_1, MOBILE, USER_IMG } from '../../Components/ImageAsstes';
@@ -6,11 +6,13 @@ import HeaderComponent from '../../Components/HeaderComponent';
 import { LIGHT_GREY } from '../../Components/Colors';
 import ImageUploadModal from '../../Components/ImageUploadModal';
 import Toast from 'react-native-simple-toast';
-import { POST_WITH_TOKEN_FORMDATA } from '../../Backend/Backend';
+import { GET_WITH_TOKEN, POST_WITH_TOKEN_FORMDATA } from '../../Backend/Backend';
+import { useIsFocused } from '@react-navigation/native';
 
 const VerificationScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [imageData, setImageData] = useState(null);
+  const [kycDetails, setKycDetails] = useState(null);
   const handleAadhaarVerify = () => {navigation.navigate('AadharVerification') };
   const handlePANVerify = () => {navigation.navigate('PanVerification') };
   const handleBankVerify = () => { navigation.navigate('VerifyBankAccountScreen') };
@@ -34,7 +36,27 @@ const VerificationScreen = ({ navigation }) => {
       console.log(error, '==error>>');
     }
   }
+const isFocus = useIsFocused()
+  const getKycDetails = async () => {
+    try {
+      const res = await GET_WITH_TOKEN('user/kyc-details');
+      console.log(res, '==response');
+      if (res?.success) {
+        setKycDetails(res?.data);
+      } else {
+        Toast.show(res?.message || 'Failed to fetch KYC details');
+      }
+    } catch (error) {
+      console.log(error, '==err');
+      Toast.show('Something went wrong');
+    }
+  }
 
+  useEffect(() => {
+    if (isFocus) {
+      getKycDetails();
+    }
+  }, [isFocus]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -66,6 +88,8 @@ const VerificationScreen = ({ navigation }) => {
           title="Aadhaar Card"
           description="Verify your identity"
           buttonText="Verify"
+
+          isVerified={kycDetails?.adhar_verified===0?false:true}
           onButtonPress={handleAadhaarVerify}
         />
         <VerificationItem
@@ -74,6 +98,7 @@ const VerificationScreen = ({ navigation }) => {
           description="Link your PAN"
           buttonText="Verify"
           onButtonPress={handlePANVerify}
+          isVerified={kycDetails?.pan_verified===0?false:true}
         />
         <VerificationItem
           iconSource={BANK}
@@ -81,6 +106,7 @@ const VerificationScreen = ({ navigation }) => {
           description="Link your bank account"
           buttonText="Verify"
           onButtonPress={handleBankVerify}
+          isVerified={kycDetails?.bank_verified===0?false:true}
         />
         <VerificationItem
           iconSource={CAMERA_1}
@@ -88,6 +114,7 @@ const VerificationScreen = ({ navigation }) => {
           description="Take a clear photo"
           buttonText="Verify"
           onButtonPress={handleSelfieVerify}
+          isVerified={kycDetails?.selfie_verified===0?false:true}
         />
       </View>
     </SafeAreaView>
