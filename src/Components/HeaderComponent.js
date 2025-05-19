@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderColor: '#eee',
+    height:100
   },
   side: {
     width: 40,

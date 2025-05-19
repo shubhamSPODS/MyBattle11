@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, Animated, Easing } from 'react-native';
 import LottieView from 'lottie-react-native';
 import Typography from './Typography';
 import { WHITE, GOLDEN } from './Colors';
 import { MEDIUM, SEMI_BOLD } from './AppFonts';
 
-const Loader = ({ visible = false ,textAppear=false}) => {
+const Loader = ({ visible = false, textAppear = false }) => {
   const [dots, setDots] = useState('');
-  const fadeAnim = new Animated.Value(0);
-  const scaleAnim = new Animated.Value(0.8);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  const animationRef = useRef(null);
 
   useEffect(() => {
     if (visible) {
+      // Reset animations to initial state
+      fadeAnim.setValue(0);
+      scaleAnim.setValue(0.8);
+
       // Start fade in animation
-      Animated.parallel([
+      const animation = Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
           duration: 500,
@@ -25,7 +30,10 @@ const Loader = ({ visible = false ,textAppear=false}) => {
           easing: Easing.elastic(1),
           useNativeDriver: true,
         })
-      ]).start();
+      ]);
+
+      animationRef.current = animation;
+      animation.start();
 
       // Animate dots
       let count = 0;
@@ -34,7 +42,12 @@ const Loader = ({ visible = false ,textAppear=false}) => {
         setDots('.'.repeat(count));
       }, 500);
 
-      return () => clearInterval(interval);
+      return () => {
+        clearInterval(interval);
+        if (animationRef.current) {
+          animationRef.current.stop();
+        }
+      };
     } else {
       fadeAnim.setValue(0);
       scaleAnim.setValue(0.8);
@@ -57,20 +70,23 @@ const Loader = ({ visible = false ,textAppear=false}) => {
           autoPlay
           loop
           style={styles.lottieAnimation}
+          onError={(error) => console.error('Lottie animation error:', error)}
         />
-   {textAppear&&     <>
-        <View style={styles.textContainer}>
-          <Typography size={30} fontFamily={SEMI_BOLD} color={GOLDEN} style={styles.mainText}>
-            Finding Match
-          </Typography>
-          <Typography size={30} fontFamily={SEMI_BOLD} color={GOLDEN} style={styles.dotsText}>
-            {dots}
-          </Typography>
-        </View>
-        <Typography size={12} color={WHITE} fontFamily={MEDIUM}>
-          Get ready for an epic battle!
-        </Typography>
-        </>}
+        {textAppear && (
+          <>
+            <View style={styles.textContainer}>
+              <Typography size={30} fontFamily={SEMI_BOLD} color={GOLDEN} style={styles.mainText}>
+                Finding Match
+              </Typography>
+              <Typography size={30} fontFamily={SEMI_BOLD} color={GOLDEN} style={styles.dotsText}>
+                {dots}
+              </Typography>
+            </View>
+            <Typography size={12} color={WHITE} fontFamily={MEDIUM}>
+              Get ready for an epic battle!
+            </Typography>
+          </>
+        )}
       </Animated.View>
     </View>
   );

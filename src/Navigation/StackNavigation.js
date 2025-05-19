@@ -4,12 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Login from '../Screens/Public/Login';
 import Otp from '../Screens/Public/Otp';
 import TabNavigation from './TabNavigation';
-import LudoGameMode from '../Screens/Private/LudoGameScreens/LudoGameMode';
-import LudoTable from '../Screens/Private/LudoGameScreens/LudoTable';
-import LudoJoinTable from '../Screens/Private/LudoGameScreens/LudoJoinTable';
 import RummyGameMode from '../Screens/Private/RummyGameScreens/RummyGameMode';
-import RummyPoolTables from '../Screens/Private/RummyGameScreens/RummyPoolTables';
-import RummyJoinGame from '../Screens/Private/RummyGameScreens/RummyJoinGame';
 import Setting from '../Screens/Private/Setting';
 import ContestsScreen from '../Screens/Private/FantasyGameScreens/ContestsScreen';
 import CreateTeamScreen from '../Screens/Private/FantasyGameScreens/CreateTeamScreen';
@@ -20,6 +15,9 @@ import WebUrl from '../Screens/WebUrl';
 import VerificationScreen from '../Screens/Private/VerificationScreen';
 import VerifyBankAccountScreen from '../Screens/Private/VerifyBankAccountScreen';
 import AadharVerification from '../Screens/Private/AadharVerification';
+import GameTable from '../Screens/Private/Shared/GameTable';
+import GameJoinTable from '../Screens/Private/Shared/GameJoinTable';
+import LudoGameMode from '../Screens/Private/LudoGameScreens/LudoGameMode';
 
 export const AuthStack = () => {
     const Stack = createNativeStackNavigator();
@@ -44,26 +42,24 @@ export const HomeStack = () => {
             headerShown: false
         }}>
             <Stack.Screen name="Tabs" component={TabNavigation} />
+            <Stack.Screen name="GameTable" component={GameTable} />
+            <Stack.Screen name="GameJoinTable" component={GameJoinTable} />
             <Stack.Screen name="LudoGameMode" component={LudoGameMode} />
-            <Stack.Screen name="LudoTable" component={LudoTable} />
-            <Stack.Screen name="LudoJoinTable" component={LudoJoinTable} />
             <Stack.Screen name="RummyGameMode" component={RummyGameMode} />
-            <Stack.Screen name="RummyPoolTables" component={RummyPoolTables} />
-            <Stack.Screen name="RummyJoinGame" component={RummyJoinGame} />
             <Stack.Screen name="Setting" component={Setting} />
             <Stack.Screen name="ContestsScreen" component={ContestsScreen} />
             <Stack.Screen name="CreateTeamScreen" component={CreateTeamScreen} />
             <Stack.Screen name="SelectContestsScreen" component={SelectContestsScreen} />
             <Stack.Screen name="ScoreboardScreen" component={ScoreboardScreen} />
             <Stack.Screen name="ContestDetailsScreen" component={ContestDetailsScreen} />
-            <Stack.Screen name='WebUrl' component={WebUrl}/>
-            <Stack.Screen name='VerificationScreen' component={VerificationScreen}/>
-            <Stack.Screen name='VerifyBankAccountScreen' component={VerifyBankAccountScreen}/>
-            <Stack.Screen name='AadharVerification' component={AadharVerification}/>
+            <Stack.Screen name='WebUrl' component={WebUrl} />
+            <Stack.Screen name='VerificationScreen' component={VerificationScreen} />
+            <Stack.Screen name='VerifyBankAccountScreen' component={VerifyBankAccountScreen} />
+            <Stack.Screen name='AadharVerification' component={AadharVerification} />
 
-            
-           
-            
+
+
+
 
         </Stack.Navigator>
 

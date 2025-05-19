@@ -64,7 +64,10 @@ const GameModeCard = ({ title, description, priceRange, players, icon }) => {
                 title="Play Now"
                 style={styles.playButton}
                 onPress={() => {
-                    navigation.navigate('LudoGameMode')
+                    navigation.navigate('GameTable', { 
+                        gameType:  'Rummy',
+                        gameMode: title 
+                    })
                 }}
             />
         </View>
@@ -78,7 +81,7 @@ const RummyGameModes = () => {
 
     const renderGameCard = ({ item }) => (
         <GameModeCard
-            title={item.title}
+            title={item?.title}
             description={item.description}
             priceRange={item.priceRange}
             players={item.players}

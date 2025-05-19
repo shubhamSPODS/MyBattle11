@@ -22,7 +22,7 @@ const LudoGameMode = () => {
         {
             id: 1,
             name: 'Dice',
-            description: `Goal: Same as classic, but time-limited turns.\nTwist: You must roll and move quickly — each turn has a countdown.\nChallenge: It’s fast-paced, so quick thinking is key.`,
+            description: `Goal: Same as classic, but time-limited turns.\nTwist: You must roll and move quickly — each turn has a countdown.\nChallenge: It's fast-paced, so quick thinking is key.`,
             img: DICE_1,
             gameMode: 'Timer',
         },
@@ -74,7 +74,10 @@ const LudoGameMode = () => {
 
 
                             <CustomButton style={{ left: 15 }} title='Play Now' onPress={() => {
-                                navigation.navigate('LudoTable', { gameType: item?.gameMode })
+                                navigation.navigate('GameTable', { 
+                                    gameType: 'Ludo',
+                                    gameMode: item?.gameMode 
+                                })
                             }} />
 
                         </View>
