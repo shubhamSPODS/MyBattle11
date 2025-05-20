@@ -1,43 +1,77 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { BACK, BELL, MYBATTLE11, USER_IMG, WALLET } from './ImageAsstes';
+import { BACK, BELL, LOGO, MYBATTLE11, USER_IMG, WALLET } from './ImageAsstes';
 import Icon from './Icon';
 import Typography from './Typography';
 import { MEDIUM, REGULAR } from './AppFonts';
 import { useDispatch } from 'react-redux';
 import { logout } from '../Redux/Slice';
+import { DARK_PURPLE, LINEAR_DARK_PURPLE, LINEAR_LIGHT_PURPLE, WHITE } from './Colors';
+import LinearGradient from 'react-native-linear-gradient';
 
 const HomeHeader = ({ user }) => {
     const disptach = useDispatch()
     return (
         <View style={styles.container}>
 
-            <View style={{ marginLeft: 10, flexDirection: "row", alignItems: "center" }}>
                 <Icon
-                    size={50}
-                    source={USER_IMG}
+                    size={40}
+                    source={LOGO}
                 />
-                <View style={{ marginLeft: 5 }}>
-                    <Text style={{ fontFamily: MEDIUM, fontSize: 12 }}>Jhon Doe</Text>
-                    <Text style={{ fontFamily: REGULAR, fontSize: 10 }}>ID: #1234</Text>
-                </View>
-            </View>
-
-            <Icon
-                size={100}
+            <Image
                 source={MYBATTLE11}
-                style={{ top: 5 }}
+                style={{ width:100,height:60,resizeMode:"contain" , marginLeft: 30,}}
             />
-            <View style={styles.icons}>
-                <TouchableOpacity onPress={(() => {
-                 
-                })}>
-                    <Icon source={BELL} size={35} />
-                </TouchableOpacity>
-                <TouchableOpacity style={{ marginLeft: 10 }}>
-                    <Icon source={WALLET} size={35} />
-                </TouchableOpacity>
-            </View>
+           
+            <LinearGradient
+              colors={[LINEAR_LIGHT_PURPLE, LINEAR_DARK_PURPLE]}
+              start={{x: 1, y: 0}}
+              end={{x: 0, y: 1}}
+              style={{
+                borderRadius: 59,
+                flexDirection: 'row',
+                marginTop: 2,
+                // height: 30,
+                width: 90,
+                borderWidth: 0.6,
+                borderColor: DARK_PURPLE,
+                marginLeft: 10,
+              }}>
+            <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => {}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View
+                  style={{
+                    height: 28,
+                    width: 28,
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: 50,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    borderWidth: 0.6,
+                    borderColor: DARK_PURPLE,
+                  }}>
+                  <Image
+                    style={{height: 20, width: 20}}
+                    resizeMode="contain"
+                    source={WALLET}
+                  />
+                </View>
+                <View>
+                  <Typography
+                    style={{marginTop: -1,left:5 }}
+                    size={12}
+                    fontFamily={MEDIUM}
+                    color={WHITE}>
+                    ₹ 1000
+                  </Typography>
+                </View>
+              </View>
+              </TouchableOpacity>
+              </LinearGradient>
+              
 
         </View>
     );

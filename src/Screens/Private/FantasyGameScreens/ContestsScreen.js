@@ -1,10 +1,11 @@
-import React, { useCallback, memo } from 'react';
+import React, { useCallback, memo, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   FlatList,
   ScrollView,
+  Alert,
 } from 'react-native';
 import Typography from '../../../Components/Typography';
 import Icon from '../../../Components/Icon';
@@ -18,18 +19,18 @@ import {
   WHITE,
 } from '../../../Components/Colors';
 import { BOLD, MEDIUM, REGULAR } from '../../../Components/AppFonts';
-import { PROFILE2 } from '../../../Components/ImageAsstes';
+import {  PROFILE2 } from '../../../Components/ImageAsstes';
 import HeaderComponent from '../../../Components/HeaderComponent';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { setMatchesData, selectUpcomingMatches } from '../../../Redux/Slice';
 
-// ContestCard component
 const ContestCard = memo(({ contest, navigation }) => {
-  const renderTeamCircle = (team, isGolden = false) => (
-    <View style={[styles.teamCircle, isGolden && { backgroundColor: GOLDEN }]}>
-      <Typography color={WHITE} fontFamily={MEDIUM} size={14}>
-        {team}
-      </Typography>
-    </View>
+  const renderTeamCircle = (team, teamName) => (
+    <View>
+   <Icon source={{uri:team}} size={30}/>
+   <Typography fontFamily={MEDIUM} size={13} style={{marginTop:5}}>{teamName}</Typography>
+   </View>
   );
 
   return (
@@ -38,54 +39,39 @@ const ContestCard = memo(({ contest, navigation }) => {
     }} style={styles.cardContainer}>
       <View style={styles.cardHeader}>
         <View style={styles.leagueContainer}>
-          <Typography fontFamily={MEDIUM} size={14}>
-            {contest.league}
+          <Typography fontFamily={MEDIUM} size={12}>
+            {contest.SeriesName}
           </Typography>
         </View>
-        <Typography fontFamily={MEDIUM} size={14}>
-          {contest.time}
+        <Typography fontFamily={MEDIUM} size={12}>
+          {contest.Type}
         </Typography>
       </View>
 
       <View style={styles.teamsContainer}>
-        {renderTeamCircle(contest.team1, false)}
-        <Typography size={14} fontFamily={MEDIUM} style={styles.vsText}>
+        {renderTeamCircle(contest.TeamAlogo, contest?.TeamAshortName)}
+        <Typography size={12} fontFamily={MEDIUM} style={styles.vsText}>
           vs
         </Typography>
-        {renderTeamCircle(contest.team2, true)}
+        {renderTeamCircle(contest.TeamBlogo, contest?.TeamBshortName)}
       </View>
 
       <View style={styles.contestDetails}>
         <View>
-          <Typography fontFamily={BOLD} size={16}>
-            {contest.contest}
+          <Typography fontFamily={BOLD} size={14}>
+            {contest.Team1vsTeam2}
           </Typography>
-          <Typography color={LIGHT_GREEN} fontFamily={MEDIUM} size={12}>
-            {contest.prizePool}
+          <Typography color={LIGHT_GREEN} fontFamily={MEDIUM} size={10}>
+            {contest.SeriesShortName}
           </Typography>
           <View style={styles.spotsContainer}>
-            <Icon source={PROFILE2} tintColor={GREY} size={20} />
+            <Icon source={PROFILE2} tintColor={GREY} size={15} />
             <Typography fontFamily={REGULAR} size={12} style={styles.spotsText}>
-              {contest.spotsFilled} spots filled
+              Match ID: {contest.MatchId}
             </Typography>
-            <View style={styles.spotsLeftBadge}>
-              <Typography color={LIGHT_GREEN} fontFamily={REGULAR} size={12}>
-                {contest.spotsLeft} spots left
-              </Typography>
-            </View>
           </View>
         </View>
-        <View style={styles.buttonGroup}>
-          
-          <TouchableOpacity 
-            style={styles.editButton}
-            // onPress={() => navigation.navigate('')}
-          >
-            <Typography color={WHITE} fontFamily={BOLD} size={14}>
-              Edit Team
-            </Typography>
-          </TouchableOpacity>
-        </View>
+      
       </View>
     </TouchableOpacity>
   );
@@ -93,74 +79,87 @@ const ContestCard = memo(({ contest, navigation }) => {
 
 const ContestsScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+  const user = useSelector(state => state.auth.user);
+  const _id = user?._id;
+  const contests = useSelector(selectUpcomingMatches);
+  useEffect(() => {
+    if (!_id) return;
+    const URL = `ws://app.mybattle11.com/upcoming-matches?limit=20&skip=0&userid=${_id}`;
+    let ws = null;
+    let reconnectTimeout = null;
+    let reconnectAttempts = 0;
+    const MAX_RECONNECT_ATTEMPTS = 5;
+    const RECONNECT_DELAY = 3000;
 
-  const contests = [
-    {
-      id: 1,
-      league: 'IPL 2025',
-      time: 'Today, 7:30 PM',
-      team1: 'MI',
-      team2: 'CSK',
-      contest: 'Mega Contest',
-      prizePool: '₹2 Lakhs Prize Pool',
-      spotsFilled: 1234,
-      spotsLeft: 766,
-    },
-    {
-      id: 2,
-      league: 'IPL 2025',
-      time: 'Today, 7:30 PM',
-      team1: 'MI',
-      team2: 'CSK',
-      contest: 'Mega Contest',
-      prizePool: '₹2 Lakhs Prize Pool',
-      spotsFilled: 1234,
-      spotsLeft: 766,
-    },
-    {
-      id: 3,
-      league: 'IPL 2025',
-      time: 'Today, 7:30 PM',
-      team1: 'MI',
-      team2: 'CSK',
-      contest: 'Mega Contest',
-      prizePool: '₹2 Lakhs Prize Pool',
-      spotsFilled: 1234,
-      spotsLeft: 766,
-    },{
-      id: 4,
-      league: 'IPL 2025',
-      time: 'Today, 7:30 PM',
-      team1: 'MI',
-      team2: 'CSK',
-      contest: 'Mega Contest',
-      prizePool: '₹2 Lakhs Prize Pool',
-      spotsFilled: 1234,
-      spotsLeft: 766,
-    },{
-      id: 5,
-      league: 'IPL 2025',
-      time: 'Today, 7:30 PM',
-      team1: 'MI',
-      team2: 'CSK',
-      contest: 'Mega Contest',
-      prizePool: '₹2 Lakhs Prize Pool',
-      spotsFilled: 1234,
-      spotsLeft: 766,
-    },
-  ];
+    const connectWebSocket = () => {
+      ws = new WebSocket(URL);
 
+      ws.onopen = () => {
+        console.log('WebSocket Connected');
+        setIsLoading(false);
+        reconnectAttempts = 0; 
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data) {
+            console.log(data,'=data');
+            dispatch(setMatchesData(data));
+          }
+        } catch (error) {
+          console.error('Error parsing WebSocket data:', error);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket Error:', error);
+        if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+          reconnectTimeout = setTimeout(() => {
+            reconnectAttempts++;
+            console.log(`Attempting to reconnect (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
+            connectWebSocket();
+          }, RECONNECT_DELAY);
+        } else {
+          setIsLoading(false);
+        }
+      };
+
+      ws.onclose = (event) => {
+        console.log('WebSocket Disconnected:', event.code, event.reason);
+        if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+          reconnectTimeout = setTimeout(() => {
+            reconnectAttempts++;
+            console.log(`Attempting to reconnect (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
+            connectWebSocket();
+          }, RECONNECT_DELAY);
+        }
+      };
+    };
+
+    connectWebSocket();
+
+    return () => {
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
+      if (ws) {
+        ws.close();
+      }
+    };
+  }, [_id, dispatch]);
   const renderItem = useCallback(({ item }) => 
     <ContestCard contest={item} navigation={navigation} />, 
     [navigation]
   );
-
   return (
     <View style={styles.container}>
       <HeaderComponent title="Upcoming Matches" />
       <View style={styles.todayBadge}>
-        <Typography color={GREY} fontFamily={MEDIUM}>
-          5 Contests Joined
+        <Typography color={GREY} size={13} fontFamily={MEDIUM}>
+          {contests.length} Matches Available
         </Typography>
         <View style={styles.todayContainer}>
           <Typography color={BLACK} fontFamily={REGULAR} size={10}>
@@ -171,7 +170,7 @@ const ContestsScreen = () => {
           style={styles.scoreboardButton}
           onPress={() => navigation.navigate('ScoreboardScreen')}
         >
-          <Typography color={WHITE} fontFamily={BOLD} size={12}>
+          <Typography color={WHITE} fontFamily={BOLD} size={10}>
             Scoreboard
           </Typography>
         </TouchableOpacity>
@@ -180,26 +179,17 @@ const ContestsScreen = () => {
       <FlatList
         data={contests}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id.toString()}
         contentContainerStyle={{ paddingBottom: 20 }}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Typography color={GREY} size={14} fontFamily={MEDIUM}>
+              {isLoading ? 'Loading matches...' : 'No matches available'}
+            </Typography>
+          </View>
+        }
       />
-
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity 
-          style={styles.myContestsButton}
-          onPress={() => navigation.navigate('CreateTeamScreen')}
-        >
-          <Typography color={WHITE} fontFamily={BOLD} size={14}>
-            Create Team
-          </Typography>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.joinMoreButton}>
-          <Typography color={WHITE} fontFamily={BOLD} size={14}>
-            Join More
-          </Typography>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
@@ -254,8 +244,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   teamCircle: {
-    width: 36,
-    height: 36,
+    width: 30,
+    height: 30,
     borderRadius: 18,
     backgroundColor: '#D40C0C',
     justifyContent: 'center',
@@ -268,6 +258,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    width:"100%"
   },
   spotsContainer: {
     flexDirection: 'row',
@@ -332,6 +323,12 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginBottom: 8,
     alignItems: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
   },
 });
 

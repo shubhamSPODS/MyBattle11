@@ -40,10 +40,10 @@ export const AuthStack = () => {
 export const HomeStack = () => {
     const Stack = createNativeStackNavigator();
     return (
-        <Stack.Navigator initialRouteName='Tabs' screenOptions={{
+        <Stack.Navigator screenOptions={{
             headerShown: false
         }}>
-            <Stack.Screen name="Tabs" component={TabNavigation} />
+            <Stack.Screen name="MainTabs" component={TabNavigation} />
             <Stack.Screen name="LudoGameMode" component={LudoGameMode} />
             <Stack.Screen name="LudoTable" component={LudoTable} />
             <Stack.Screen name="LudoJoinTable" component={LudoJoinTable} />

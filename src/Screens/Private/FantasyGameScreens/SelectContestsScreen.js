@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -22,10 +22,55 @@ import {
   LIGHT_GREEN,
 } from '../../../Components/Colors';
 import { BOLD, MEDIUM, REGULAR, SEMI_BOLD } from '../../../Components/AppFonts';
+import { useSelector } from 'react-redux';
 
 const SelectContestsScreen = () => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState('All Contests');
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const contestData = useSelector(store => store?.matches);
+  const user = useSelector(state => state.auth.user);
+
+
+  useEffect(() => {
+    if (contestData?.upcomingMatches?.[0] && contestData?.upcomingMatches[0]?.contest_details?.[0]?.data?.[0]) {
+      const matchDetails = contestData.upcomingMatches[0];
+      const contestCategory = matchDetails.contest_details[0].data[0];
+      
+      const wsUrl = `ws://app.mybattle11.com/leader-board?limit=10&skip=0&matchid=${matchDetails.MatchId}&contest_category_id=${contestCategory?.contest_category_id}&user_id=${user?._id}`;
+       console.log(wsUrl,'==url');
+       
+      const ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        console.log('WebSocket Connected');
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log('Leaderboard data received:', data);
+          setLeaderboardData(data);
+        } catch (error) {
+          console.error('Error parsing WebSocket data:', error);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket disconnected');
+      };
+
+      return () => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.close();
+        }
+      };
+    }
+  }, [contestData, user]);
 
   const tabs = [
     { id: 1, name: 'All Contests', selected: true },

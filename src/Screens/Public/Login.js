@@ -99,25 +99,7 @@ const Login = () => {
                 }}
               />
             )}
-
-            <CommonButton
-              title="Get OTP"
-              style={styles.button}
-              onPress={onLoginPress}
-            />
-
-            <Typography
-              textAlign="right"
-              size={14}
-              style={styles.referralToggle}
-              textDecorationLine="underline"
-              color={DARK_PURPLE}
-              fontFamily={SEMI_BOLD}
-              onPress={() => setShowReferral(!showReferral)}
-            >
-              Have a referal code?
-            </Typography>
-            <TouchableOpacity onPress={() => setIsSelectedAge(!isSelectedAge)} style={styles.checkbox}>
+               <TouchableOpacity onPress={() => setIsSelectedAge(!isSelectedAge)} style={[styles.checkbox,{marginTop:20}]}>
               <Checkbox onPress={() => setIsSelectedAge(!isSelectedAge)} value={isSelectedAge} />
               <Typography size={13} fontFamily={MEDIUM} style={styles.checkboxText}>
                 I confirm that I am 18+ years in age
@@ -139,6 +121,25 @@ const Login = () => {
                 </Typography>
               </Typography>
             </TouchableOpacity>
+
+            <CommonButton
+              title="Get OTP"
+              style={styles.button}
+              onPress={onLoginPress}
+            />
+
+            <Typography
+              textAlign="right"
+              size={14}
+              style={styles.referralToggle}
+              textDecorationLine="underline"
+              color={DARK_PURPLE}
+              fontFamily={SEMI_BOLD}
+              onPress={() => setShowReferral(!showReferral)}
+            >
+              Have a referal code?
+            </Typography>
+         
             <View style={{ marginBottom: 20 }}></View>
           </View>
         </View>

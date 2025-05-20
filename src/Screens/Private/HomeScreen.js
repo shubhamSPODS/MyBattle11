@@ -15,15 +15,9 @@ const HomeScreen = ({ navigation }) => {
     return (
         <View style={{ flex: 1, backgroundColor: WHITE }}>
             <HomeHeader />
-            <ScrollView>
-                <Image
-                    source={BANNER}
-                    style={{ width: FULL_WIDTH - 50, 
-                        alignSelf: "center", 
-                        height: 180, 
-                        marginTop: 10 }}
-                />
-                <View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+             
+                <View style={{width:FULL_WIDTH-20,alignSelf:"center",}}>
                     <FlatList
                         data={[
                             { id: 0, img: ADD, text: "Add Money" },
@@ -35,7 +29,6 @@ const HomeScreen = ({ navigation }) => {
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{
-                            paddingHorizontal: 20,
                             paddingVertical: 10,
                         }}
                         keyExtractor={(item) => item.id.toString()}
@@ -64,55 +57,58 @@ const HomeScreen = ({ navigation }) => {
                                     style={{
                                         alignItems: "center",
                                         justifyContent: "center",
-                                        width: 60,
-                                        height: 60,
+                                        width: 50,
+                                        height: 50,
                                         borderRadius: 30,
                                     }}
                                 >
-                                    <Icon source={item.img} size={24} />
+                                    <Icon source={item.img} size={20} />
                                 </LinearGradient>
-                                <Typography size={13} style={{ marginTop: 5, color: '#000' }}>{item.text}</Typography>
+                                <Typography size={12} style={{ marginTop: 5, color: '#000' }}>{item.text}</Typography>
                             </TouchableOpacity>
                         )}
                     />
                 </View>
-                <Typography color={BLACK} fontFamily={SEMI_BOLD} style={{ marginHorizontal: 20, marginVertical: 15 }}>Popular games</Typography>
+                <Typography color={BLACK} fontFamily={SEMI_BOLD} style={{ marginHorizontal: 20, marginVertical: 10 }}>Popular games</Typography>
 
                 <TouchableOpacity activeOpacity={0.9} onPress={() => {
                     navigation.navigate('ContestsScreen')
                 }}>
                     <Image style={{
-                        width: FULL_WIDTH - 50,
-                        height: 200,
+                        width: FULL_WIDTH - 40,
+                        height: 180,
                         alignSelf: "center",
-                        resizeMode: "cover",
+                        resizeMode: "contain",
+                        borderRadius: 10
                     }}
                         source={FANTASY_BANNER}
-                    ></Image>
+                    />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
                     navigation.navigate('LudoGameMode')
                 }} activeOpacity={0.9}>
                     <Image style={{
-                        width: FULL_WIDTH - 50,
-                        height: 200,
+                        width: FULL_WIDTH - 40,
+                        height: 180,
                         alignSelf: "center",
-                        resizeMode: "cover",
+                        resizeMode: "contain",
+                        borderRadius: 10
                     }}
                         source={LUDO_BANNER}
-                    ></Image>
+                    />
                 </TouchableOpacity>
                 <TouchableOpacity  onPress={()=>{
                      navigation.navigate('RummyGameMode')
                 }} activeOpacity={0.9}>
                     <Image style={{
-                        width: FULL_WIDTH - 50,
-                        height: 200,
+                        width: FULL_WIDTH - 40,
+                        height: 180,
                         alignSelf: "center",
-                        resizeMode: "cover",
+                        resizeMode: "contain",
+                        borderRadius: 10
                     }}
                         source={RUMMY_BANNER}
-                    ></Image>
+                    />
                 </TouchableOpacity>
                 <View style={{ height: 50 }}></View>
             </ScrollView>
