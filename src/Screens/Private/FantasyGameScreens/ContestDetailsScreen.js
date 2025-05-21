@@ -25,9 +25,10 @@ import { BOLD, MEDIUM, REGULAR, SEMI_BOLD } from '../../../Components/AppFonts';
 import { PRIZE } from '../../../Components/ImageAsstes';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
-const ContestDetailsScreen = () => {
+const ContestDetailsScreen = ({ route }) => {
     const navigation = useNavigation();
     const layout = useWindowDimensions();
+    const { contest_category_id, shadow_contest_id, contest_type, winning_amount } = route.params;
 
     const [index, setIndex] = useState(0);
     const [routes] = useState([
@@ -119,16 +120,13 @@ const ContestDetailsScreen = () => {
             <HeaderComponent title="Contest Details" showBackIcon={true} walletIcon />
             <View style={styles.matchInfo}>
                 <Typography fontFamily={BOLD} color={DARK_RED} size={22}>
-                    THN<Typography fontFamily={BOLD} color={GREY} size={16}> vs</Typography><Typography fontFamily={BOLD} color={GOLDEN} size={20}> LEX</Typography>
-                </Typography>
-                <Typography fontFamily={REGULAR} size={12} textAlign={'center'} color={GREY}>
-                    25 May 2025
+                    {contest_type}
                 </Typography>
             </View>
 
             <View style={styles.prizePool}>
                 <Typography fontFamily={SEMI_BOLD} size={24} color={GOLDEN}>
-                    ₹3,000
+                    ₹{winning_amount}
                 </Typography>
                 <Typography fontFamily={REGULAR} size={14} color={GREY}>
                     Prize Pool

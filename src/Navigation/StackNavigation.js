@@ -19,6 +19,22 @@ import GameTable from '../Screens/Private/Shared/GameTable';
 import GameJoinTable from '../Screens/Private/Shared/GameJoinTable';
 import LudoGameMode from '../Screens/Private/LudoGameScreens/LudoGameMode';
 import PanVerification from '../Screens/Private/PanVerification';
+import { useSelector } from 'react-redux';
+import MatchDetailsScreen from '../Screens/Private/FantasyGameScreens/MatchDetailsScreen';
+
+
+
+export const MainNavigation = () => {
+    const userToken = useSelector(store => store.auth.token)
+    
+    return (
+        <>
+            {userToken ? <HomeStack /> : <AuthStack />
+
+            }
+        </>
+    )
+}
 
 export const AuthStack = () => {
     const Stack = createNativeStackNavigator();
@@ -29,13 +45,9 @@ export const AuthStack = () => {
             <Stack.Screen name='Login' component={Login}></Stack.Screen>
             <Stack.Screen name='Otp' component={Otp}></Stack.Screen>
             <Stack.Screen name='WebUrl' component={WebUrl}></Stack.Screen>
-
         </Stack.Navigator>
-
     )
-
 }
-
 export const HomeStack = () => {
     const Stack = createNativeStackNavigator();
     return (
@@ -49,7 +61,6 @@ export const HomeStack = () => {
             <Stack.Screen name="RummyGameMode" component={RummyGameMode} />
             <Stack.Screen name="Setting" component={Setting} />
             <Stack.Screen name="ContestsScreen" component={ContestsScreen} />
-            <Stack.Screen name="CreateTeamScreen" component={CreateTeamScreen} />
             <Stack.Screen name="SelectContestsScreen" component={SelectContestsScreen} />
             <Stack.Screen name="ScoreboardScreen" component={ScoreboardScreen} />
             <Stack.Screen name="ContestDetailsScreen" component={ContestDetailsScreen} />
@@ -58,11 +69,8 @@ export const HomeStack = () => {
             <Stack.Screen name='VerifyBankAccountScreen' component={VerifyBankAccountScreen} />
             <Stack.Screen name='AadharVerification' component={AadharVerification} />
             <Stack.Screen name='PanVerification' component={PanVerification} />
-
-
-            
-
-
+            <Stack.Screen name='MatchDetailsScreen' component={MatchDetailsScreen} />
+            <Stack.Screen name='CreateTeamScreen' component={CreateTeamScreen} />
 
         </Stack.Navigator>
 

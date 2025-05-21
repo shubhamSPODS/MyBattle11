@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Typography from '../../../Components/Typography';
+import Typography, { FULL_WIDTH } from '../../../Components/Typography';
 import HeaderComponent from '../../../Components/HeaderComponent';
 import CustomButton from '../../../Components/CustomButton';
 import {
@@ -22,149 +22,117 @@ import {
   LIGHT_GREEN,
 } from '../../../Components/Colors';
 import { BOLD, MEDIUM, REGULAR, SEMI_BOLD } from '../../../Components/AppFonts';
+import { useSelector } from 'react-redux';
+import EmptyList from '../../../Components/EmptyList';
 
-const SelectContestsScreen = () => {
+const SelectContestsScreen = ({ route }) => {
   const navigation = useNavigation();
-  const [activeTab, setActiveTab] = useState('All Contests');
+  const { contestDetails, contestAllInfo, matchId } = route.params;
+  console.log(contestAllInfo,'==allinfooo');
+  
 
-  const tabs = [
-    { id: 1, name: 'All Contests', selected: true },
-    { id: 2, name: 'Free (3)', selected: false },
-    { id: 3, name: 'Practice (5)', selected: false },
-  ];
-
-  const contests = [
-    {
-      id: 1,
-      prizePool: '₹2 Lakhs',
-      trophy: '₹15',
-      spotsFilled: 1500,
-      totalSpots: 10000,
-      firstPrize: '₹25,000',
-      secondPrize: '₹15,000',
-    },
-    {
-      id: 2,
-      prizePool: '₹2 Lakhs',
-      trophy: '₹15',
-      spotsFilled: 7500,
-      totalSpots: 10000,
-      firstPrize: '₹25,000',
-      secondPrize: '₹15,000',
-    },
-    {
-      id: 3,
-      prizePool: '₹2 Lakhs',
-      trophy: '₹15',
-      spotsFilled: 7500,
-      totalSpots: 10000,
-      firstPrize: '₹25,000',
-      secondPrize: '₹15,000',
-    },
-  ];
-
-  const renderTabItem = ({ item }) => (
-    <TouchableOpacity
-      style={[
-        styles.tabItem,
-        activeTab === item.name && styles.activeTabItem,
-      ]}
-      onPress={() => setActiveTab(item.name)}
-    >
-      <Typography
-        fontFamily={MEDIUM}
-        size={12}
-        color={activeTab === item.name ? WHITE : BLACK}
-      >
-        {item.name}
-      </Typography>
-    </TouchableOpacity>
-  );
-
+    
   const renderContestItem = ({ item }) => (
-    <View style={styles.contestCard}>
-      <View style={styles.contestHeader}>
-        <View style={styles.prizePoolContainer}>
-          <Typography fontFamily={MEDIUM} size={14} color={BLACK}>
-            {item.prizePool}
-          </Typography>
-        </View>
-        <View style={styles.trophyContainer}>
-          <Typography fontFamily={MEDIUM} size={14} color={BLACK}>
-            🏆 {item.trophy}
-          </Typography>
-        </View>
-      </View>
+    <>
+      {item?.contest_info?.length > 0 ? <>
+        <View style={styles.contestCard}>
+          <View style={styles.contestHeader}>
+            <View style={styles.prizePoolContainer}>
+              <Typography fontFamily={MEDIUM} size={14} color={BLACK}>
+                {item?.contest_info[0]?.EnteryFee === 0 ? 'Free' : `₹${item?.contest_info[0]?.EnteryFee}`}
+              </Typography>
+            </View>
+            <View style={styles.trophyContainer}>
+              <Typography fontFamily={MEDIUM} size={14} color={BLACK}>
+                🏆 {item?.contest_info[0]?.WinningAmount}
+              </Typography>
+            </View>
+          </View>
 
-      <View style={styles.progressBarContainer}>
-        <View style={styles.progressBar}>
-          <View
-            style={[
-              styles.progressFill,
-              { width: `${(item.spotsFilled / item.totalSpots) * 100}%` },
-            ]}
-          />
-        </View>
-      </View>
+          <View style={styles.progressBarContainer}>
+            <View style={styles.progressBar}>
+              <View
+                style={[
+                  styles.progressFill,
+                  { width: `${(item?.joined / item?.contest_info[0]?.Contestsize) * 100}%` },
+                ]}
+              />
+            </View>
+          </View>
 
-      <View style={styles.spotsContainer}>
-        <Typography fontFamily={REGULAR} size={12} color={DARK_RED}>
-          {item.spotsFilled} spots left
-        </Typography>
-        <Typography fontFamily={REGULAR} size={12} color={GREY}>
-          {item.totalSpots} spots
-        </Typography>
-      </View>
+          <View style={styles.spotsContainer}>
+            <Typography fontFamily={REGULAR} size={12} color={DARK_RED}>
+              {`${Math.max(0, item?.contest_info[0]?.Contestsize - item?.joined)}`} spots left
+            </Typography>
+            <Typography fontFamily={REGULAR} size={12} color={GREY}>
+              {item?.contest_info[0]?.Contestsize} spots
+            </Typography>
+          </View>
 
-      <View style={styles.prizesContainer}>
-        <View style={styles.prizeItem}>
-          <Typography fontFamily={REGULAR} size={12} color={GREY}>
-            1st
-          </Typography>
-          <Typography fontFamily={MEDIUM} size={14} color={LIGHT_GREEN}>
-            {item.firstPrize}
-          </Typography>
+          <View style={styles.prizesContainer}>
+            {item?.contest_info[0]?.EnteryFee !== 0 ? (
+              <>
+                <View style={styles.prizeItem}>
+                  <Typography fontFamily={REGULAR} size={12} color={GREY}>
+                    1st
+                  </Typography>
+                  <Typography fontFamily={MEDIUM} size={14} color={LIGHT_GREEN}>
+                    ₹{item?.contest_info[0]?.Rankdata[0]?.Price}
+                  </Typography>
+                </View>
+                <View style={styles.prizeItem}>
+                  <Typography fontFamily={REGULAR} size={12} color={GREY}>
+                    2nd
+                  </Typography>
+                  <Typography fontFamily={REGULAR} size={14} color={LIGHT_GREEN}>
+                    ₹{item?.contest_info[0]?.Rankdata[1]?.Price === undefined ? 0 : item?.contest_info[0]?.Rankdata[1]?.Price}
+                  </Typography>
+                </View>
+              </>
+            ) : (
+              <View />
+            )}
+            <CustomButton
+              title="Join"
+              style={styles.joinButton}
+              onPress={() => {
+                navigation.navigate('MatchDetailsScreen',
+                  {
+                    contestAllInfo: contestAllInfo,
+                    winningAmount: item?.contest_info[0]?.WinningAmount,
+                    spotsLeftWidth: `${(item?.joined / item?.contest_info[0]?.Contestsize) * 100}%`,
+                    spotsLeftCount: `${Math.max(0, item?.contest_info[0]?.Contestsize - item?.joined)}`,
+                    firstPrice: item?.contest_info[0]?.Rankdata[0]?.Price,
+                    JoinWithMULT: item?.contest_info[0]?.JoinWithMULT,
+                    totalJoinedTeams: item?.contest_info[0]?.teams,
+                    contest_category_id: item?.contest_category_id,
+                    shadow_contest_id: item?.shadow_contest_id,
+                    matchId: matchId,
+                    rankData: item?.contest_info[0],
+                    matchObjectId : contestAllInfo?._id
+                  })
+              }}
+            />
+          </View>
         </View>
-        <View style={styles.prizeItem}>
-          <Typography fontFamily={REGULAR} size={12} color={GREY}>
-            2nd
-          </Typography>
-          <Typography fontFamily={MEDIUM} size={14} color={LIGHT_GREEN}>
-            {item.secondPrize}
-          </Typography>
-        </View>
-        
-        <CustomButton
-          title="Join"
-          style={styles.joinButton}
-          onPress={() => {}}
-        />
-      </View>
-    </View>
+      </>
+        :
+        <EmptyList />
+      }
+    </>
+
   );
 
   return (
     <View style={styles.container}>
       <HeaderComponent title="Select Contest" />
-      
-      <View style={styles.tabsContainer}>
-        <FlatList
-          data={tabs}
-          renderItem={renderTabItem}
-          keyExtractor={(item) => item.id.toString()}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-
       <FlatList
-        data={contests}
+        data={contestDetails?.data}
         renderItem={renderContestItem}
-        keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.contestsContainer}
       />
 
-      <View style={styles.bottomButtonsContainer}>
+      {/* <View style={styles.bottomButtonsContainer}>
         <CustomButton
           title="Create Team"
           style={styles.createTeamButton}
@@ -172,11 +140,11 @@ const SelectContestsScreen = () => {
         />
         <CustomButton
           title="Create Scoreboard"
-          textStyle={{textAlign:'center',fontSize:13}}
+          textStyle={{ textAlign: 'center', fontSize: 13 }}
           style={styles.createScoreboardButton}
           onPress={() => navigation.navigate('ScoreboardScreen')}
         />
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -196,15 +164,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     borderRadius: 20,
     backgroundColor: WHITE,
-    borderColor:DARK_RED,
-    borderWidth:1
+    borderColor: DARK_RED,
+    borderWidth: 1,
   },
   activeTabItem: {
     backgroundColor: DARK_RED,
   },
   contestsContainer: {
     padding: 10,
-    paddingBottom: 80, 
+    paddingBottom: 80,
   },
   contestCard: {
     backgroundColor: WHITE,
@@ -276,10 +244,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     left: 0,
+    right: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: WHITE,
     paddingVertical: 10,
+    paddingHorizontal: 10,
     borderTopWidth: 1,
     borderTopColor: LIGHT_GREY,
   },
@@ -290,7 +260,6 @@ const styles = StyleSheet.create({
   createScoreboardButton: {
     width: '50%',
     backgroundColor: GOLDEN,
-   
   },
 });
 
