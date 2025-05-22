@@ -66,6 +66,13 @@ export const RECOMMENDED_ICON= require('../assets/Images/recommendedIcon.png')
 export const CheckAdhaar = require('../assets/Images/checkAdhaar.png');
 export const CALENDAR = require('../assets/Images/calanderIcon.png')
 export const EDIT = require('../assets/Images/edit.png')
+export const Shapeparallelogram = require('../assets/Images/assets_images_shapeparallelogram.png')
+export const ADD_BUTTON_GREEN = require('../assets/Images/addButton.png')
+export const MORE_ADD = require('../assets/Images/more.png')
+
+
+
+
 
 
 

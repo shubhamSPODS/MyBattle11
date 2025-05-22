@@ -38,10 +38,11 @@ const MatchDetailsScreen = ({ route }) => {
     firstPrice,
     JoinWithMULT,
     totalJoinedTeams,
-    rankData ,
-    matchObjectId} = route.params;
+    rankData,
+    matchObjectId } = route.params;
   const navigation = useNavigation();
   const user = useSelector(state => state.auth.user);
+  // console.log(contestAllInfo?.TeamBlogo,'==blogo');
   
   const wsUrl = `wss://app.mybattle11.com/leader-board?limit=10&skip=0&matchid=${matchId}&shadow_contest_id=${shadow_contest_id}&contest_category_id=${contest_category_id}&user_id=${user?._id}`;
 
@@ -117,24 +118,24 @@ const MatchDetailsScreen = ({ route }) => {
 
   const LeaderboardTab = () => (
     <View style={styles.tabContentContainer}>
-        <FlatList
-          data={leaderBoardData?.data}
-          renderItem={({ item, index }) => (
-            <View style={[styles.leaderboardRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
-             
-              <View style={{flexDirection:"row",alignItems:"center"}}>
-              <Icon source={item?.logo ===undefined ? STATIC_USER:{uri:`${BASE_URL}${item?.logo}`}} size={25} style={{borderRadius:20,}}/>
-              <Typography fontFamily={MEDIUM} size={14} style={{marginLeft:10}}>
+      <FlatList
+        data={leaderBoardData?.data}
+        renderItem={({ item, index }) => (
+          <View style={[styles.leaderboardRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
+
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Icon source={item?.logo === undefined ? STATIC_USER : { uri: `${BASE_URL}${item?.logo}` }} size={25} style={{ borderRadius: 20, }} />
+              <Typography fontFamily={MEDIUM} size={14} style={{ marginLeft: 10 }}>
                 {item?.username || item?.full_name}
               </Typography>
-              </View>
-              <Typography fontFamily={MEDIUM} size={14}>
-                {item?.team_details?.name || '0'}
-              </Typography>
             </View>
-          )}
-          keyExtractor={(item, index) => index.toString()}
-        />
+            <Typography fontFamily={MEDIUM} size={14}>
+              {item?.team_details?.name || '0'}
+            </Typography>
+          </View>
+        )}
+        keyExtractor={(item, index) => index.toString()}
+      />
     </View>
   );
 
@@ -233,7 +234,13 @@ const MatchDetailsScreen = ({ route }) => {
         style={styles.tabView}
       />
 
-      <TouchableOpacity style={styles.joinButton} onPress={()=>{navigation.navigate('CreateTeamScreen',{matchObjectId:matchObjectId})}}>
+      <TouchableOpacity style={styles.joinButton} onPress={() => {
+        navigation.navigate('CreateTeamScreen', {
+          matchObjectId: matchObjectId,
+           teamALogo: contestAllInfo?.TeamAlogo,
+           teamBLogo: contestAllInfo?.TeamBlogo
+        })
+      }}>
         <Typography fontFamily={BOLD} size={16} color={WHITE}>
           JOIN
         </Typography>
@@ -349,8 +356,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    width:'100%',
-    justifyContent:'space-between'
+    width: '100%',
+    justifyContent: 'space-between'
   },
 });
 

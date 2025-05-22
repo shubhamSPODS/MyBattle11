@@ -21,6 +21,8 @@ import LudoGameMode from '../Screens/Private/LudoGameScreens/LudoGameMode';
 import PanVerification from '../Screens/Private/PanVerification';
 import { useSelector } from 'react-redux';
 import MatchDetailsScreen from '../Screens/Private/FantasyGameScreens/MatchDetailsScreen';
+import MultiSelectScreen from '../Screens/Private/MultiSelectScreen';
+import SelectCaptain from '../Screens/Private/FantasyGameScreens/SelectCaptain';
 
 
 
@@ -71,6 +73,10 @@ export const HomeStack = () => {
             <Stack.Screen name='PanVerification' component={PanVerification} />
             <Stack.Screen name='MatchDetailsScreen' component={MatchDetailsScreen} />
             <Stack.Screen name='CreateTeamScreen' component={CreateTeamScreen} />
+            <Stack.Screen name='MultiSelectScreen' component={MultiSelectScreen} />
+            <Stack.Screen name='SelectCaptain' component={SelectCaptain} />
+
+
 
         </Stack.Navigator>
 
