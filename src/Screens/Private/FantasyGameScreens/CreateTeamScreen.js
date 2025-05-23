@@ -20,7 +20,8 @@ const players = Array(8).fill({
 });
 
 const CreateTeamScreen = ({ route, navigation }) => {
-  const { matchObjectId, teamALogo, teamBLogo } = route?.params
+  const { matchObjectId, teamALogo, teamBLogo ,matchId,contestDetails,contestAllInfo} = route?.params
+
   const [selectedId, setSelectedId] = React.useState('')
   const [playerData, setPlayerData] = React.useState([])
   const [selectedPlayers, setSelectedPlayers] = React.useState([])
@@ -62,8 +63,6 @@ const CreateTeamScreen = ({ route, navigation }) => {
   }, [])
 
   const handlePlayerSelection = (player) => {
-    console.log(player, '==player',);
-    
     const isSelected = selectedPlayers?.some(p => p?._id === player?._id);
     if (!!isSelected) {
       setSelectedPlayers(prev => prev?.filter(p => p?._id !== player?._id));
@@ -77,13 +76,11 @@ const CreateTeamScreen = ({ route, navigation }) => {
           return;
         }
 
-        // Check if trying to select all players from one team
         if (teamCount >= 10 && otherTeamCount === 0) {
           Toast.show('You must select at least one player from each team', Toast.LONG);
           return;
         }
 
-        // Check if trying to select 11th player from same team when other team has no players
         if (selectedPlayers.length === 10 && otherTeamCount === 0) {
           Toast.show('You must select at least one player from each team');
           return;
@@ -272,22 +269,10 @@ const CreateTeamScreen = ({ route, navigation }) => {
       Toast.show('Please Select 11 Players');
       return;
     }
-    const wkCount = selectedPlayers?.filter(p => p?.playing_role === 'wk')?.length;
-    const batCount = selectedPlayers?.filter(p => p?.playing_role === 'bat')?.length;
-    const bowlCount = selectedPlayers?.filter(p => p?.playing_role === 'bowl')?.length;
-    const arCount = selectedPlayers?.filter(p => p?.playing_role === 'all')?.length;
-    const missingRoles = [];
-    if (wkCount === 0) missingRoles.push('wk');
-    if (batCount === 0) missingRoles.push('bat');
-    if (bowlCount === 0) missingRoles.push('bowl');
-    if (arCount === 0) missingRoles.push('ar');
-
-    if (missingRoles.length > 0) {
-      Toast.show(`Please select at least one player from ${missingRoles?.join(', ')} tab`, Toast.LONG);
-      return;
-    }
-
-    navigation.navigate('SelectCaptain');
+    
+    navigation.navigate('SelectCaptain', { selectedPlayers: selectedPlayers,matchObjectId:matchObjectId ,matchId:matchId,
+      contestDetails:contestDetails,contestAllInfo:contestAllInfo
+    });
   };
 
   return (

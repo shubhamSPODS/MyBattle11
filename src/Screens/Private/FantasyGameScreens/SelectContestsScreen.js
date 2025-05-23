@@ -28,9 +28,9 @@ import EmptyList from '../../../Components/EmptyList';
 const SelectContestsScreen = ({ route }) => {
   const navigation = useNavigation();
   const { contestDetails, contestAllInfo, matchId } = route.params;
-  console.log(contestAllInfo,'==allinfooo');
   
-
+ console.log(contestDetails,contestAllInfo,matchId,'====match id');
+ 
     
   const renderContestItem = ({ item }) => (
     <>
@@ -98,6 +98,7 @@ const SelectContestsScreen = ({ route }) => {
               onPress={() => {
                 navigation.navigate('MatchDetailsScreen',
                   {
+                    contestDetails:contestDetails,
                     contestAllInfo: contestAllInfo,
                     winningAmount: item?.contest_info[0]?.WinningAmount,
                     spotsLeftWidth: `${(item?.joined / item?.contest_info[0]?.Contestsize) * 100}%`,

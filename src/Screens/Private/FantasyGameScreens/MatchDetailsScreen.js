@@ -39,6 +39,7 @@ const MatchDetailsScreen = ({ route }) => {
     JoinWithMULT,
     totalJoinedTeams,
     rankData,
+    contestDetails,
     matchObjectId } = route.params;
   const navigation = useNavigation();
   const user = useSelector(state => state.auth.user);
@@ -238,7 +239,10 @@ const MatchDetailsScreen = ({ route }) => {
         navigation.navigate('CreateTeamScreen', {
           matchObjectId: matchObjectId,
            teamALogo: contestAllInfo?.TeamAlogo,
-           teamBLogo: contestAllInfo?.TeamBlogo
+           teamBLogo: contestAllInfo?.TeamBlogo,
+           matchId:matchId,
+           contestAllInfo:contestAllInfo,
+           contestDetails:contestDetails
         })
       }}>
         <Typography fontFamily={BOLD} size={16} color={WHITE}>
