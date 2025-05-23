@@ -21,9 +21,10 @@ const players = Array(8).fill({
 
 const CreateTeamScreen = ({ route, navigation }) => {
   const { matchObjectId, teamALogo, teamBLogo } = route?.params
-  const [selectedId, setSelectedId] = React.useState('')
+  const [selectedIds, setSelectedIds] = React.useState([]);
   const [playerData, setPlayerData] = React.useState([])
   const [selectedPlayers, setSelectedPlayers] = React.useState([])
+  const selectedItems = React.useRef([])
   const [index, setIndex] = React.useState(0);
   const teamAListRef = React.useRef(null);
   const teamBListRef = React.useRef(null);
@@ -54,7 +55,7 @@ const CreateTeamScreen = ({ route, navigation }) => {
       }
 
     } catch (error) {
-      console.log(error, '===apierr');
+      console.log(error, '====apierr');
     }
   }
   React.useEffect(() => {
@@ -62,42 +63,17 @@ const CreateTeamScreen = ({ route, navigation }) => {
   }, [])
 
   const handlePlayerSelection = (player) => {
-    console.log(player, '==player',);
+    const isSelected = selectedItems.current?.some(p => p?._id === player?._id);
     
-    const isSelected = selectedPlayers?.some(p => p?._id === player?._id);
-    if (!!isSelected) {
-      setSelectedPlayers(prev => prev?.filter(p => p?._id !== player?._id));
+    if (isSelected) {
+      selectedItems.current = selectedItems.current?.filter(p => p?._id !== player?._id);
     } else {
-      if (selectedPlayers.length < 11) {
-        const teamCount = selectedPlayers?.filter(p => p?.team_label === player?.team_label)?.length;
-        const otherTeamCount = selectedPlayers?.filter(p => p?.team_label !== player?.team_label)?.length;
-
-        if (selectedPlayers?.length === 0) {
-          setSelectedPlayers(prev => [...prev, player]);
-          return;
-        }
-
-        // Check if trying to select all players from one team
-        if (teamCount >= 10 && otherTeamCount === 0) {
-          Toast.show('You must select at least one player from each team', Toast.LONG);
-          return;
-        }
-
-        // Check if trying to select 11th player from same team when other team has no players
-        if (selectedPlayers.length === 10 && otherTeamCount === 0) {
-          Toast.show('You must select at least one player from each team');
-          return;
-        }
-
-        setSelectedPlayers(prev => [...prev, player]);
-      } else {
-        Toast.show('Maximum 11 players allowed in team');
-      }
+      selectedItems.current.push(player);
     }
   };
 
   const renderPastLineupItem = ({ item, index }) => {
-    const isSelected = selectedPlayers.some(p => p._id === item._id);
+    const isSelected = selectedItems.current?.some(p => p?._id === item?._id);
 
     return (
       <TouchableOpacity
@@ -107,21 +83,22 @@ const CreateTeamScreen = ({ route, navigation }) => {
           alignSelf: "flex-end",
           borderBottomWidth: 1,
           borderColor: LIGHT_GREY,
-          backgroundColor: isSelected ? LIGHT_GREY : 'transparent'
+          backgroundColor: isSelected ? LIGHT_GREY : 'transparent',
+          borderLeftWidth: isSelected ? 3 : 0,
+          borderLeftColor: DARK_RED
         }}
         onPress={() => handlePlayerSelection(item)}
       >
         <View style={{ flexDirection: 'row', justifyContent: "space-between", width: '100%' }}>
           <View style={{ flexDirection: "row", width: '70%', }}>
             <Icon source={STATIC_USER} size={30} />
-
             <View>
-              <Typography size={10} fontFamily={MEDIUM} style={{ marginLeft: 5, marginTop: 5 }}>{item?.short_name}</Typography>
-              <Typography size={11} style={{ marginLeft: 5 }}>{item?.team_label || ''}</Typography>
+              <Typography size={10} fontFamily={MEDIUM} style={{ marginLeft: 5, marginTop: 5, color: isSelected ? DARK_RED : BLACK }}>{item?.short_name}</Typography>
+              <Typography size={11} style={{ marginLeft: 5, color: isSelected ? DARK_RED : BLACK }}>{item?.team_label || ''}</Typography>
             </View>
           </View>
           <View style={{ width: '30%', alignItems: 'flex-end', }}>
-            <View style={{ backgroundColor: isSelected ? DARK_RED : DARK_RED, padding: 5, borderRadius: 30 }}>
+            <View style={{ backgroundColor: isSelected ? DARK_RED : LIGHT_GREY, padding: 5, borderRadius: 30 }}>
               <Icon
                 tintColor={WHITE}
                 style={{ width: 10, height: 10, resizeMode: 'contain', }}
@@ -129,18 +106,17 @@ const CreateTeamScreen = ({ route, navigation }) => {
                 resizeMode="contain"
               />
             </View>
-            <Typography size={11} style={{ marginVertical: 5 }}>{(item?.average_point)?.toFixed(2)}</Typography>
+            <Typography size={11} style={{ marginVertical: 5, color: isSelected ? DARK_RED : BLACK }}>{(item?.average_point)?.toFixed(2)}</Typography>
           </View>
         </View>
       </TouchableOpacity>
-    )
-  }
-
-  const PlayerList = ({ route, playersData }) => {
+    );
+  };
+  
+  const PlayerList = React.memo(({ route, playersData, onPress }) => {
     const teamAPlayers = playersData[0]?.players || [];
     const teamBPlayers = playersData[1]?.players || [];
 
-    // Filter players based on role
     const getFilteredPlayers = () => {
       const allPlayers = [...teamAPlayers, ...teamBPlayers];
       switch (route?.key) {
@@ -174,10 +150,10 @@ const CreateTeamScreen = ({ route, navigation }) => {
                       ref={teamAListRef}
                       scrollEnabled={false}
                       data={teamAPlayers}
+                      extraData={selectedItems}
                       keyExtractor={(item) => item?._id?.toString()}
                       renderItem={renderPastLineupItem}
                       showsVerticalScrollIndicator={false}
-                      extraData={selectedPlayers}
                     />
                   </View>
                   <View style={{ width: "50%", borderLeftWidth: 1, borderColor: LIGHT_GREY }}>
@@ -185,6 +161,7 @@ const CreateTeamScreen = ({ route, navigation }) => {
                       ref={teamBListRef}
                       scrollEnabled={false}
                       data={teamBPlayers}
+                      extraData={selectedItems}
                       keyExtractor={(item) => item?._id?.toString()}
                       renderItem={renderPastLineupItem}
                       showsVerticalScrollIndicator={false}
@@ -199,7 +176,9 @@ const CreateTeamScreen = ({ route, navigation }) => {
                     alignSelf: "flex-end",
                     borderBottomWidth: 1,
                     borderColor: LIGHT_GREY,
-                    backgroundColor: selectedPlayers.some(p => p._id === item._id) ? LIGHT_GREY : 'transparent'
+                    backgroundColor: selectedItems.current?.some(p => p?._id === item?._id) ? LIGHT_GREY : 'transparent',
+                    borderLeftWidth: selectedItems.current?.some(p => p?._id === item?._id) ? 3 : 0,
+                    borderLeftColor: DARK_RED
                   }}
                   onPress={() => handlePlayerSelection(item)}
                 >
@@ -207,12 +186,12 @@ const CreateTeamScreen = ({ route, navigation }) => {
                     <View style={{ flexDirection: "row", width: '70%', }}>
                       <Icon source={STATIC_USER} size={30} />
                       <View>
-                        <Typography size={10} fontFamily={MEDIUM} style={{ marginLeft: 5, marginTop: 5 }}>{item?.short_name}</Typography>
-                        <Typography size={11} style={{ marginLeft: 5 }}>{item?.team_label}</Typography>
+                        <Typography size={10} fontFamily={MEDIUM} style={{ marginLeft: 5, marginTop: 5, color: selectedItems.current?.some(p => p?._id === item?._id) ? DARK_RED : BLACK }}>{item?.short_name}</Typography>
+                        <Typography size={11} style={{ marginLeft: 5, color: selectedItems.current?.some(p => p?._id === item?._id) ? DARK_RED : BLACK }}>{item?.team_label}</Typography>
                       </View>
                     </View>
                     <View style={{ width: '30%', alignItems: 'flex-end', }}>
-                      <View style={{ backgroundColor: selectedPlayers.some(p => p._id === item._id) ? DARK_RED : DARK_RED, padding: 5, borderRadius: 30 }}>
+                      <View style={{ backgroundColor: selectedItems.current?.some(p => p?._id === item?._id) ? DARK_RED : LIGHT_GREY, padding: 5, borderRadius: 30 }}>
                         <Icon
                           tintColor={WHITE}
                           style={{ width: 10, height: 10, resizeMode: 'contain', }}
@@ -220,7 +199,7 @@ const CreateTeamScreen = ({ route, navigation }) => {
                           resizeMode="contain"
                         />
                       </View>
-                      <Typography size={11} style={{ marginVertical: 5 }}>{(item?.average_point)?.toFixed(2)}</Typography>
+                      <Typography size={11} style={{ marginVertical: 5, color: selectedItems.current?.some(p => p?._id === item?._id) ? DARK_RED : BLACK }}>{(item?.average_point)?.toFixed(2)}</Typography>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -230,7 +209,7 @@ const CreateTeamScreen = ({ route, navigation }) => {
         }}
       />
     );
-  }
+  });
 
   // Update the selection count display
   const renderSelectionCount = () => (
@@ -238,7 +217,7 @@ const CreateTeamScreen = ({ route, navigation }) => {
       <View style={{ justifyContent: 'center', }}>
         <Typography size={10}>Selection</Typography>
         <Typography size={10} fontFamily={SEMI_BOLD}>
-          {selectedPlayers.length}/11
+          {selectedItems.current?.length}/11
         </Typography>
       </View>
 
@@ -261,21 +240,21 @@ const CreateTeamScreen = ({ route, navigation }) => {
           Credit
         </Typography>
         <Typography size={10} fontFamily={BOLD}>
-          {selectedPlayers?.reduce((sum, player) => sum + (player.points || 0), 0)}
+          {selectedItems.current?.reduce((sum, player) => sum + (player.points || 0), 0)}
         </Typography>
       </View>
     </View>
   );
 
   const onSelectCaptain = () => {
-    if (selectedPlayers?.length < 11) {
+    if (selectedItems.current?.length < 11) {
       Toast.show('Please Select 11 Players');
       return;
     }
-    const wkCount = selectedPlayers?.filter(p => p?.playing_role === 'wk')?.length;
-    const batCount = selectedPlayers?.filter(p => p?.playing_role === 'bat')?.length;
-    const bowlCount = selectedPlayers?.filter(p => p?.playing_role === 'bowl')?.length;
-    const arCount = selectedPlayers?.filter(p => p?.playing_role === 'all')?.length;
+    const wkCount = selectedItems.current?.filter(p => p?.playing_role === 'wk')?.length;
+    const batCount = selectedItems.current?.filter(p => p?.playing_role === 'bat')?.length;
+    const bowlCount = selectedItems.current?.filter(p => p?.playing_role === 'bowl')?.length;
+    const arCount = selectedItems.current?.filter(p => p?.playing_role === 'all')?.length;
     const missingRoles = [];
     if (wkCount === 0) missingRoles.push('wk');
     if (batCount === 0) missingRoles.push('bat');
@@ -312,7 +291,7 @@ const CreateTeamScreen = ({ route, navigation }) => {
         {new Array(11).fill('').map((item, index) => (
           <Icon
             key={index}
-            tintColor={index < selectedPlayers.length ? LIGHT_GREEN : LIGHT_GREY}
+            tintColor={index < selectedItems.current.length ? LIGHT_GREEN : LIGHT_GREY}
             source={Shapeparallelogram}
             size={30}
           />

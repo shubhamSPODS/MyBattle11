@@ -28,9 +28,6 @@ import EmptyList from '../../../Components/EmptyList';
 const SelectContestsScreen = ({ route }) => {
   const navigation = useNavigation();
   const { contestDetails, contestAllInfo, matchId } = route.params;
-  console.log(contestAllInfo,'==allinfooo');
-  
-
     
   const renderContestItem = ({ item }) => (
     <>
