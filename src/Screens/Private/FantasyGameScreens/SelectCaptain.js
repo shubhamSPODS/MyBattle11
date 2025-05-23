@@ -133,8 +133,9 @@ const SelectCaptain = ({ route, navigation }) => {
         Toast.show('Team created successfully');
       
         navigation.reset({
-          index: 1,
+          index: 2,
           routes: [
+            { name: 'Tabs' },
             { name: 'ContestsScreen' },
             { 
               name: 'SelectContestsScreen',
