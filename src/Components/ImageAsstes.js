@@ -69,6 +69,12 @@ export const EDIT = require('../assets/Images/edit.png')
 export const Shapeparallelogram = require('../assets/Images/assets_images_shapeparallelogram.png')
 export const ADD_BUTTON_GREEN = require('../assets/Images/addButton.png')
 export const MORE_ADD = require('../assets/Images/more.png')
+export const DOWN_ARROW = require('../assets/Images/down.png')
+export const GRASS = require('../assets/Images/grass.png')
+export const COPY = require('../assets/Images/copy.png')
+
+
+
 
 
 

@@ -28,13 +28,14 @@ import { selectContestData } from '../../../Redux/Slice';
 
 const SelectContestsScreen = ({ route }) => {
   const navigation = useNavigation();
-  // const { contestDetails, contestAllInfo, matchId } = route.params;
   const contestData = useSelector(selectContestData);
   
   const renderContestItem = ({ item }) => (
     <>
       {item?.contest_info?.length > 0 ? <>
-        <View style={styles.contestCard}>
+        <TouchableOpacity style={styles.contestCard} activeOpacity={0.9} onPress={()=>{
+          navigation.navigate('MyContest')
+        }}>
           <View style={styles.contestHeader}>
             <View style={styles.prizePoolContainer}>
               <Typography fontFamily={MEDIUM} size={14} color={BLACK}>
@@ -110,7 +111,7 @@ const SelectContestsScreen = ({ route }) => {
               }}
             />
           </View>
-        </View>
+        </TouchableOpacity>
       </>
         :
         <EmptyList />

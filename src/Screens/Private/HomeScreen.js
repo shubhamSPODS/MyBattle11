@@ -77,7 +77,9 @@ const HomeScreen = ({ navigation }) => {
                 <Typography color={BLACK} fontFamily={SEMI_BOLD} style={{ marginHorizontal: 30, marginVertical: 10 }}>Popular games</Typography>
 
                 <TouchableOpacity activeOpacity={0.9} onPress={() => {
-                    navigation.navigate('ContestsScreen')
+                    // navigation.navigate('ContestsScreen')
+                    navigation.navigate('MyContest')
+
                 }}>
                     <Image style={{
                         width: FULL_WIDTH - 40,

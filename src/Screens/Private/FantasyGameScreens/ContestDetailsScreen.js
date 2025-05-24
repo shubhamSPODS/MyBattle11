@@ -181,7 +181,7 @@ const ContestDetailsScreen = ({ route }) => {
                 style={styles.tabView}
             />
 
-            <TouchableOpacity style={styles.joinButton}>
+<TouchableOpacity style={styles.joinButton}>
                 <Typography fontFamily={BOLD} size={16} color={WHITE}>
                     JOIN
                 </Typography>
