@@ -26,6 +26,7 @@ import Icon from '../../../Components/Icon';
 import { useSelector } from 'react-redux';
 import { BASE_URL } from '../../../Backend/Backend';
 import { STATIC_USER } from '../../../Components/ImageAsstes';
+import { selectContestData } from '../../../Redux/Slice';
 
 const MatchDetailsScreen = ({ route }) => {
   const { matchId,
@@ -44,8 +45,10 @@ const MatchDetailsScreen = ({ route }) => {
   const navigation = useNavigation();
   const user = useSelector(state => state.auth.user);
   // console.log(contestAllInfo?.TeamBlogo,'==blogo');
+  const contestData = useSelector(selectContestData);
+
   
-  const wsUrl = `wss://app.mybattle11.com/leader-board?limit=10&skip=0&matchid=${matchId}&shadow_contest_id=${shadow_contest_id}&contest_category_id=${contest_category_id}&user_id=${user?._id}`;
+  const wsUrl = `wss://app.mybattle11.com/leader-board?limit=10&skip=0&matchid=${contestData?.contestAllInfo?.MatchId}&shadow_contest_id=${shadow_contest_id}&contest_category_id=${contest_category_id}&user_id=${user?._id}`;
 
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
@@ -238,11 +241,7 @@ const MatchDetailsScreen = ({ route }) => {
       <TouchableOpacity style={styles.joinButton} onPress={() => {
         navigation.navigate('CreateTeamScreen', {
           matchObjectId: matchObjectId,
-           teamALogo: contestAllInfo?.TeamAlogo,
-           teamBLogo: contestAllInfo?.TeamBlogo,
            matchId:matchId,
-           contestAllInfo:contestAllInfo,
-           contestDetails:contestDetails
         })
       }}>
         <Typography fontFamily={BOLD} size={16} color={WHITE}>

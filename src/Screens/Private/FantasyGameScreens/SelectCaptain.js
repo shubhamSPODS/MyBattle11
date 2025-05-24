@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, SectionList } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
 import React from 'react';
 import HeaderComponent from '../../../Components/HeaderComponent';
 import { WHITE, BLACK, DARK_RED, LIGHT_GREY, LIGHT_GREEN, GREY } from '../../../Components/Colors';
@@ -9,11 +9,14 @@ import { STATIC_USER } from '../../../Components/ImageAsstes';
 import Toast from 'react-native-simple-toast';
 import { POST_WITH_TOKEN } from '../../../Backend/Backend';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { selectContestData } from '../../../Redux/Slice';
+import { useSelector } from 'react-redux';
 
 const SelectCaptain = ({ route, navigation }) => {
-  const { selectedPlayers,matchId,matchObjectId,contestAllInfo,contestDetails} = route.params || {}; 
-  
-        
+  const { selectedPlayers,} = route.params || {}; 
+  const contestData = useSelector(selectContestData);
+         console.log(contestData,'===contestdata');
+         
   const [captain, setCaptain] = React.useState(null);
   const [viceCaptain, setViceCaptain] = React.useState(null);
  
@@ -38,7 +41,16 @@ const SelectCaptain = ({ route, navigation }) => {
     }
   };
 
-  const renderPlayerItem = ({ item }) => {
+  const getOrderedPlayers = () => {
+    const roleOrder = ['wk', 'bat', 'bowl', 'all'];
+    return roleOrder.flatMap(role => 
+      selectedPlayers?.filter(player => 
+        player?.playing_role?.toLowerCase() === role
+      )
+    );
+  };
+
+  const renderItem = ({ item }) => {
     const isCaptain = captain?._id === item._id;
     const isViceCaptain = viceCaptain?._id === item._id;
 
@@ -75,30 +87,6 @@ const SelectCaptain = ({ route, navigation }) => {
     );
   };
 
-  const groupPlayersByRole = () => {
-    const roleMap = {
-      wk: 'Wicket-Keeper',
-      bat: 'Batsman',
-      bowl: 'Bowler',
-      all: 'All-Rounder',
-    };
-    const grouped = Object.entries(roleMap).map(([key, label]) => ({
-      title: label,
-      data: selectedPlayers?.filter(player =>
-        player?.playing_role?.toLowerCase() === key
-      ),
-    }));
-    return grouped?.filter(section => section.data.length > 0);
-  };
-  
- 
-  
-  const renderSectionHeader = ({ section: { title } }) => (
-    <View style={styles.sectionHeader}>
-      <Typography fontFamily={SEMI_BOLD} color={WHITE} size={14}>{title}</Typography>
-    </View>
-  );
-
   const onSave = async () => {
     if (!captain || !viceCaptain) {
       Toast.show('Please select both Captain and Vice-Captain');
@@ -115,18 +103,15 @@ const SelectCaptain = ({ route, navigation }) => {
       const teamName = `T${newCount}`;
   
       const body = {
-        match_id: matchObjectId, 
+        match_id: contestData?.contestAllInfo?._id, 
         pid: playerIds,
         name: teamName,
-        matchid: JSON.stringify(matchId),       
+        matchid: JSON.stringify(contestData?.contestAllInfo?.MatchId),       
         vice_caption: viceCaptain?.pid,
         caption: captain?.pid,
       };
   
-      console.log(body, '=BODYYY');
-  
       const createTeam = await POST_WITH_TOKEN('match/create-team', body);
-      console.log('Team created:', createTeam);
   
       if (createTeam?.success === true) {
         await AsyncStorage.setItem('team_count', newCount.toString());
@@ -137,14 +122,7 @@ const SelectCaptain = ({ route, navigation }) => {
           routes: [
             { name: 'Tabs' },
             { name: 'ContestsScreen' },
-            { 
-              name: 'SelectContestsScreen',
-              params: {
-                contestDetails: contestDetails,
-                contestAllInfo: contestAllInfo,
-                matchId: matchId,
-              }
-            }
+            { name: 'SelectContestsScreen' }
           ],
         });
       } else {
@@ -165,11 +143,10 @@ const SelectCaptain = ({ route, navigation }) => {
         <Typography size={10}>C will get 2x points & VC will get 1.5x points</Typography>
       </View>
 
-      <SectionList
-        sections={groupPlayersByRole()}
+      <FlatList
+        data={getOrderedPlayers()}
         keyExtractor={(item) => item._id?.toString()}
-        renderItem={renderPlayerItem}
-        renderSectionHeader={renderSectionHeader}
+        renderItem={renderItem}
         contentContainerStyle={{ paddingBottom: 150 }}
       />
 

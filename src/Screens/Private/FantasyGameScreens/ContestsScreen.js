@@ -23,28 +23,35 @@ import {  PROFILE2 } from '../../../Components/ImageAsstes';
 import HeaderComponent from '../../../Components/HeaderComponent';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { setMatchesData, selectUpcomingMatches } from '../../../Redux/Slice';
+import { setMatchesData, selectUpcomingMatches, setContestData } from '../../../Redux/Slice';
 
 const ContestCard = memo(({ contest, navigation }) => {
-  // console.log(contest,'==contest');
+  const dispatch = useDispatch();
   
+  const handleContestPress = () => {
+    // Save contest data to Redux
+    dispatch(setContestData({
+      matchId: contest?.MatchId,
+      contestDetails: contest?.contest_details || [],
+      contestAllInfo: contest
+    }));
+    
+    // Navigate to SelectContestsScreen
+    navigation.navigate('SelectContestsScreen', { 
+      contestDetails: contest?.contest_details || [],
+      contestAllInfo: contest
+    });
+  };
+
   const renderTeamCircle = (team, teamName) => (
     <View>
-   <Icon source={{uri:team}} size={30}/>
-   <Typography fontFamily={MEDIUM} size={13} style={{marginTop:5}}>{teamName}</Typography>
-   </View>
+      <Icon source={{uri:team}} size={30}/>
+      <Typography fontFamily={MEDIUM} size={13} style={{marginTop:5}}>{teamName}</Typography>
+    </View>
   );
 
   return (
-    <TouchableOpacity activeOpacity={0.9} onPress={()=>{
-      // Pass all contest details to SelectContestsScreen
-      navigation.navigate('SelectContestsScreen', { 
-        matchId: contest?.MatchId,
-        contestDetails: contest?.contest_details || [],
-        contestAllInfo : contest
-      
-      })
-    }} style={styles.cardContainer}>
+    <TouchableOpacity activeOpacity={0.9} onPress={handleContestPress} style={styles.cardContainer}>
       <View style={styles.cardHeader}>
         <View style={styles.leagueContainer}>
           <Typography fontFamily={MEDIUM} size={12}>

@@ -58,6 +58,7 @@ export const {
 export const {
   setMatchesData,
   clearMatchesData,
+  setContestData,
 } = matchesSlice.actions;
 
 export const authReducer = authSlice.reducer;
@@ -69,3 +70,4 @@ export const selectAuthToken = (state) => state.auth.token;
 export const selectUpcomingMatches = (state) => state.matches.upcomingMatches;
 export const selectMyMatches = (state) => state.matches.myMatches;
 export const selectMatchesLastUpdated = (state) => state.matches.lastUpdated;
+export const selectContestData = (state) => state.matches.contestData;

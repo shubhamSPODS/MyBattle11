@@ -24,14 +24,13 @@ import {
 import { BOLD, MEDIUM, REGULAR, SEMI_BOLD } from '../../../Components/AppFonts';
 import { useSelector } from 'react-redux';
 import EmptyList from '../../../Components/EmptyList';
+import { selectContestData } from '../../../Redux/Slice';
 
 const SelectContestsScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { contestDetails, contestAllInfo, matchId } = route.params;
+  // const { contestDetails, contestAllInfo, matchId } = route.params;
+  const contestData = useSelector(selectContestData);
   
- console.log(contestDetails,contestAllInfo,matchId,'====match id');
- 
-    
   const renderContestItem = ({ item }) => (
     <>
       {item?.contest_info?.length > 0 ? <>
@@ -98,8 +97,6 @@ const SelectContestsScreen = ({ route }) => {
               onPress={() => {
                 navigation.navigate('MatchDetailsScreen',
                   {
-                    contestDetails:contestDetails,
-                    contestAllInfo: contestAllInfo,
                     winningAmount: item?.contest_info[0]?.WinningAmount,
                     spotsLeftWidth: `${(item?.joined / item?.contest_info[0]?.Contestsize) * 100}%`,
                     spotsLeftCount: `${Math.max(0, item?.contest_info[0]?.Contestsize - item?.joined)}`,
@@ -108,9 +105,7 @@ const SelectContestsScreen = ({ route }) => {
                     totalJoinedTeams: item?.contest_info[0]?.teams,
                     contest_category_id: item?.contest_category_id,
                     shadow_contest_id: item?.shadow_contest_id,
-                    matchId: matchId,
                     rankData: item?.contest_info[0],
-                    matchObjectId : contestAllInfo?._id
                   })
               }}
             />
@@ -128,24 +123,23 @@ const SelectContestsScreen = ({ route }) => {
     <View style={styles.container}>
       <HeaderComponent title="Select Contest" />
       <FlatList
-        data={contestDetails?.data}
+        data={contestData?.contestDetails?.data}
         renderItem={renderContestItem}
         contentContainerStyle={styles.contestsContainer}
       />
 
-      {/* <View style={styles.bottomButtonsContainer}>
-        <CustomButton
-          title="Create Team"
-          style={styles.createTeamButton}
-          onPress={() => navigation.navigate('CreateTeamScreen')}
-        />
-        <CustomButton
-          title="Create Scoreboard"
-          textStyle={{ textAlign: 'center', fontSize: 13 }}
-          style={styles.createScoreboardButton}
-          onPress={() => navigation.navigate('ScoreboardScreen')}
-        />
-      </View> */}
+      <View style={styles.bottomBar}>
+        <TouchableOpacity style={styles.previewBtn} onPress={()=>{
+          navigation.navigate('CreateTeamScreen')
+        }}>
+          <Typography style={styles.btnText}>Create Team</Typography>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.selectBtn} onPress={() => {
+          onSelectCaptain()
+        }}>
+          <Typography style={[styles.btnText, { color: '#fff' }]}>Scordeboard</Typography>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -262,6 +256,13 @@ const styles = StyleSheet.create({
     width: '50%',
     backgroundColor: GOLDEN,
   },
+  bottomBar: {
+    position: 'absolute', left: 0, right: 0, bottom: 0, flexDirection: 'row',
+    justifyContent: 'space-between', padding: 16, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#eee',
+  },
+  previewBtn: { flex: 1, borderWidth: 1, borderColor: DARK_RED, borderRadius: 8, marginRight: 8, alignItems: 'center', padding: 12 },
+  selectBtn: { flex: 1, backgroundColor: DARK_RED, borderRadius: 8, marginLeft: 8, alignItems: 'center', padding: 12 },
+  btnText: { color: DARK_RED, fontWeight: 'bold', fontSize: 16 },
 });
 
 export default SelectContestsScreen; 

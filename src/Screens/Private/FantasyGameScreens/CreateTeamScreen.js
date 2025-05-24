@@ -10,6 +10,8 @@ import { BLACK, DARK_RED, GREY, LIGHT_GREEN, LIGHT_GREY, WHITE } from '../../../
 import { GET_WITH_TOKEN, POST_WITH_TOKEN } from '../../../Backend/Backend';
 import Toast from 'react-native-simple-toast';
 import LinearGradient from 'react-native-linear-gradient';
+import { useSelector } from 'react-redux';
+import { selectContestData } from '../../../Redux/Slice';
 
 const players = Array(8).fill({
   id: Math.random().toString(),
@@ -19,16 +21,14 @@ const players = Array(8).fill({
   avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
 });
 
-const CreateTeamScreen = ({ route, navigation }) => {
-  const { matchObjectId, teamALogo, teamBLogo ,matchId,contestDetails,contestAllInfo} = route?.params
-
-  const [selectedId, setSelectedId] = React.useState('')
+const CreateTeamScreen = ({ navigation }) => {
+  const contestData = useSelector(selectContestData);
+  
   const [playerData, setPlayerData] = React.useState([])
   const [selectedPlayers, setSelectedPlayers] = React.useState([])
   const [index, setIndex] = React.useState(0);
   const teamAListRef = React.useRef(null);
   const teamBListRef = React.useRef(null);
-  const [scrollPosition, setScrollPosition] = React.useState(0);
   const [routes] = React.useState([
     { key: 'squads', title: 'Squads(48)' },
     { key: 'wk', title: 'WK' },
@@ -36,7 +36,6 @@ const CreateTeamScreen = ({ route, navigation }) => {
     { key: 'ar', title: 'AR' },
     { key: 'bowl', title: 'BOWL' },
   ]);
-
   const renderScene = SceneMap({
     squads: props => <PlayerList route={props.route} playersData={playerData} />,
     wk: props => <PlayerList route={props.route} playersData={playerData} />,
@@ -44,10 +43,9 @@ const CreateTeamScreen = ({ route, navigation }) => {
     ar: props => <PlayerList route={props.route} playersData={playerData} />,
     bowl: props => <PlayerList route={props.route} playersData={playerData} />,
   });
-
   const getTeamPlayer = async () => {
     try {
-      const response = await POST_WITH_TOKEN(`match/all-players/${matchObjectId}`, {})
+      const response = await POST_WITH_TOKEN(`match/all-players/${contestData?.contestAllInfo?._id}`, {})
       console.log('API Response:', response);
       if (response?.success === true) {
         console.log('Setting player data:', response?.data);
@@ -137,7 +135,6 @@ const CreateTeamScreen = ({ route, navigation }) => {
     const teamAPlayers = playersData[0]?.players || [];
     const teamBPlayers = playersData[1]?.players || [];
 
-    // Filter players based on role
     const getFilteredPlayers = () => {
       const allPlayers = [...teamAPlayers, ...teamBPlayers];
       switch (route?.key) {
@@ -229,7 +226,6 @@ const CreateTeamScreen = ({ route, navigation }) => {
     );
   }
 
-  // Update the selection count display
   const renderSelectionCount = () => (
     <View style={{ flexDirection: "row", width: FULL_WIDTH - 50, alignSelf: "center", justifyContent: "space-between", paddingHorizontal: 10, marginTop: 10 }}>
       <View style={{ justifyContent: 'center', }}>
@@ -270,8 +266,8 @@ const CreateTeamScreen = ({ route, navigation }) => {
       return;
     }
     
-    navigation.navigate('SelectCaptain', { selectedPlayers: selectedPlayers,matchObjectId:matchObjectId ,matchId:matchId,
-      contestDetails:contestDetails,contestAllInfo:contestAllInfo
+    navigation.navigate('SelectCaptain', { selectedPlayers: selectedPlayers,
+     
     });
   };
 
@@ -284,11 +280,11 @@ const CreateTeamScreen = ({ route, navigation }) => {
         justifyContent: "space-between", alignItems: 'center', borderRadius: 5
       }}>
 
-        <Icon source={{ uri: teamALogo }} size={30} />
+        <Icon source={{ uri: contestData?.contestAllInfo?.TeamAlogo }} size={30} />
         <View>
           <Typography fontFamily={MEDIUM} size={14} color={WHITE}>1h : 52Min</Typography>
         </View>
-        <Icon source={{ uri: teamBLogo }} size={30} />
+        <Icon source={{ uri: contestData?.contestAllInfo?.TeamBlogo }} size={30} />
       </LinearGradient>
 
       {renderSelectionCount()}
