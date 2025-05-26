@@ -47,7 +47,8 @@ const MatchDetailsScreen = ({ route }) => {
   // console.log(contestAllInfo?.TeamBlogo,'==blogo');
   const contestData = useSelector(selectContestData);
 
-  
+   console.log(contestData,'===contestdaa');
+   
   const wsUrl = `wss://app.mybattle11.com/leader-board?limit=10&skip=0&matchid=${contestData?.contestAllInfo?.MatchId}&shadow_contest_id=${shadow_contest_id}&contest_category_id=${contest_category_id}&user_id=${user?._id}`;
 
   const layout = useWindowDimensions();
@@ -171,9 +172,9 @@ const MatchDetailsScreen = ({ route }) => {
     <View style={styles.container}>
       <HeaderComponent title="Contest Details" showBackIcon={true} walletIcon />
       <View style={styles.matchInfo}>
-        <Icon size={40} source={{ uri: contestAllInfo?.TeamAlogo }} />
+        <Icon size={40} source={{ uri: contestData?.contestAllInfo?.TeamAlogo }} />
         <Typography fontFamily={BOLD} color={DARK_RED}>   Vs   </Typography>
-        <Icon size={40} source={{ uri: contestAllInfo?.TeamBlogo }} />
+        <Icon size={40} source={{ uri: contestData?.contestAllInfo?.TeamBlogo }} />
 
       </View>
 

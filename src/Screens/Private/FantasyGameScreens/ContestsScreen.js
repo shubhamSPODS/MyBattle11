@@ -99,9 +99,8 @@ const ContestsScreen = () => {
   const user = useSelector(state => state.auth.user);
   const _id = user?._id;
   const contests = useSelector(selectUpcomingMatches);
-   
   const memoizedContests = useMemo(() => contests, [contests?.length]);
-  
+   
   useEffect(() => {
     if (!_id) return;
     const URL = `ws://app.mybattle11.com/upcoming-matches?limit=20&skip=0&userid=${_id}`;
@@ -123,7 +122,8 @@ const ContestsScreen = () => {
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          
+            console.log(data,'==data===');
+            
           if (data) {
             dispatch(setMatchesData(data));
           }

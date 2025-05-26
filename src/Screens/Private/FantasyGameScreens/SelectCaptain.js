@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Modal } from 'react-native';
 import React from 'react';
 import HeaderComponent from '../../../Components/HeaderComponent';
 import { WHITE, BLACK, DARK_RED, LIGHT_GREY, LIGHT_GREEN, GREY } from '../../../Components/Colors';
@@ -15,10 +15,11 @@ import { useSelector } from 'react-redux';
 const SelectCaptain = ({ route, navigation }) => {
   const { selectedPlayers,} = route.params || {}; 
   const contestData = useSelector(selectContestData);
-         console.log(contestData,'===contestdata');
-         
   const [captain, setCaptain] = React.useState(null);
   const [viceCaptain, setViceCaptain] = React.useState(null);
+  const [showPreview, setShowPreview] = React.useState(false);
+  console.log(captain,viceCaptain,'===ss');
+  
  
   const handleCaptainSelect = (player) => {
     if (captain?._id === player._id) {
@@ -31,7 +32,6 @@ const SelectCaptain = ({ route, navigation }) => {
   };
 
   const handleViceCaptainSelect = (player) => {
-
     if (viceCaptain?._id === player._id) {
       setViceCaptain(null);
     } else if (captain?._id === player._id) {
@@ -93,7 +93,7 @@ const SelectCaptain = ({ route, navigation }) => {
       return;
     }
   
-    const playerIds = selectedPlayers.map(player => player.pid);
+    const playerIds = selectedPlayers?.map(player => player.pid);
   
     try {
       const storedCount = await AsyncStorage.getItem('team_count');
@@ -134,6 +134,61 @@ const SelectCaptain = ({ route, navigation }) => {
     }
   };
   
+  const handlePreview = () => {
+    navigation.navigate('TeamPreview', {
+      selectedPlayers,
+      captain,
+      viceCaptain
+    });
+  };
+
+  const PreviewModal = () => {
+    return (
+      <Modal
+        visible={showPreview}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowPreview(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Typography fontFamily={SEMI_BOLD} size={18} style={styles.modalTitle}>Team Preview</Typography>
+            
+            <View style={styles.previewSection}>
+              <Typography fontFamily={MEDIUM} size={16}>Captain</Typography>
+              {captain ? (
+                <View style={styles.previewPlayer}>
+                  <Typography>{captain?.short_name}</Typography>
+                  <Typography size={12} color={GREY}>{captain?.team_label} | {captain?.playing_role?.toUpperCase()}</Typography>
+                </View>
+              ) : (
+                <Typography color={GREY}>Not selected</Typography>
+              )}
+            </View>
+
+            <View style={styles.previewSection}>
+              <Typography fontFamily={MEDIUM} size={16}>Vice Captain</Typography>
+              {viceCaptain ? (
+                <View style={styles.previewPlayer}>
+                  <Typography>{viceCaptain?.short_name}</Typography>
+                  <Typography size={12} color={GREY}>{viceCaptain?.team_label} | {viceCaptain?.playing_role?.toUpperCase()}</Typography>
+                </View>
+              ) : (
+                <Typography color={GREY}>Not selected</Typography>
+              )}
+            </View>
+
+            <TouchableOpacity 
+              style={styles.closeButton}
+              onPress={() => setShowPreview(false)}
+            >
+              <Typography style={styles.closeButtonText}>Close</Typography>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -151,13 +206,18 @@ const SelectCaptain = ({ route, navigation }) => {
       />
 
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.previewBtn}>
+        <TouchableOpacity 
+          style={styles.previewBtn}
+          onPress={handlePreview}
+        >
           <Typography style={styles.bottomBtnText}>TEAM PREVIEW</Typography>
         </TouchableOpacity>
         <TouchableOpacity onPress={onSave} style={styles.saveBtn}>
           <Typography style={[styles.bottomBtnText, { color: WHITE }]}>SAVE</Typography>
         </TouchableOpacity>
       </View>
+
+      <PreviewModal />
     </View>
   );
 };
@@ -235,5 +295,42 @@ const styles = StyleSheet.create({
     color: DARK_RED,
     fontWeight: 'bold',
     fontSize: 16
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: WHITE,
+    borderRadius: 12,
+    padding: 20,
+    width: '80%',
+    maxWidth: 400,
+  },
+  modalTitle: {
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  previewSection: {
+    marginBottom: 20,
+  },
+  previewPlayer: {
+    marginTop: 8,
+    padding: 10,
+    backgroundColor: LIGHT_GREY,
+    borderRadius: 8,
+  },
+  closeButton: {
+    backgroundColor: DARK_RED,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  closeButtonText: {
+    color: WHITE,
+    fontWeight: 'bold',
   },
 });

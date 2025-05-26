@@ -13,13 +13,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useSelector } from 'react-redux';
 import { selectContestData } from '../../../Redux/Slice';
 
-const players = Array(8).fill({
-  id: Math.random().toString(),
-  name: 'V. Kohli',
-  role: 'BAT',
-  points: 450,
-  avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-});
+
 
 const CreateTeamScreen = ({ navigation }) => {
   const contestData = useSelector(selectContestData);
@@ -321,7 +315,9 @@ const CreateTeamScreen = ({ navigation }) => {
       />
 
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.previewBtn}>
+        <TouchableOpacity style={styles.previewBtn} onPress={()=>{
+          navigation.navigate('TeamPreview',{selectedPlayers:selectedPlayers})
+        }}>
           <Text style={styles.btnText}>Preview</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.selectBtn} onPress={() => {

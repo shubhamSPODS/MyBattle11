@@ -72,6 +72,10 @@ export const MORE_ADD = require('../assets/Images/more.png')
 export const DOWN_ARROW = require('../assets/Images/down.png')
 export const GRASS = require('../assets/Images/grass.png')
 export const COPY = require('../assets/Images/copy.png')
+export const WICKET_KEEPER = require('../assets/Images/wicket_keeper.png')
+export const GROUND_GREEN = require('../assets/Images/groundGreen.png')
+
+
 
 
 

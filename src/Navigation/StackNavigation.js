@@ -24,6 +24,7 @@ import MatchDetailsScreen from '../Screens/Private/FantasyGameScreens/MatchDetai
 import MultiSelectScreen from '../Screens/Private/MultiSelectScreen';
 import SelectCaptain from '../Screens/Private/FantasyGameScreens/SelectCaptain';
 import MyContest from '../Screens/Private/FantasyGameScreens/MyContest';
+import TeamPreview from '../Screens/Private/FantasyGameScreens/TeamPreview';
 
 
 
@@ -77,6 +78,8 @@ export const HomeStack = () => {
             <Stack.Screen name='MultiSelectScreen' component={MultiSelectScreen} />
             <Stack.Screen name='SelectCaptain' component={SelectCaptain} />
             <Stack.Screen name='MyContest' component={MyContest} />
+            <Stack.Screen name='TeamPreview' component={TeamPreview} />
+
 
 
 

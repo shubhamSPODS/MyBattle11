@@ -29,7 +29,8 @@ import { selectContestData } from '../../../Redux/Slice';
 const SelectContestsScreen = ({ route }) => {
   const navigation = useNavigation();
   const contestData = useSelector(selectContestData);
-  
+    console.log(contestData,'==contestdata');
+    
   const renderContestItem = ({ item }) => (
     <>
       {item?.contest_info?.length > 0 ? <>
