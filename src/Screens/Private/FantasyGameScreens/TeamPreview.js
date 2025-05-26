@@ -14,7 +14,7 @@ import { BLACK, WHITE, DARK_RED, LIGHT_GREEN } from '../../../Components/Colors'
 import { BACK, GROUND_GREEN, WICKET_KEEPER } from '../../../Components/ImageAsstes';
 import Typography, { FULL_HEIGHT, FULL_WIDTH } from '../../../Components/Typography';
 import Icon from '../../../Components/Icon';
-import { BOLD, MEDIUM } from '../../../Components/AppFonts';
+import { BOLD } from '../../../Components/AppFonts';
 
 const TeamPreview = ({ navigation, route }) => {
     const { selectedPlayers, captain, viceCaptain } = route?.params;

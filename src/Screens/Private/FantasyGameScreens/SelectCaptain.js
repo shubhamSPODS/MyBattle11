@@ -18,7 +18,6 @@ const SelectCaptain = ({ route, navigation }) => {
   const [captain, setCaptain] = React.useState(null);
   const [viceCaptain, setViceCaptain] = React.useState(null);
   const [showPreview, setShowPreview] = React.useState(false);
-  console.log(captain,viceCaptain,'===ss');
   
  
   const handleCaptainSelect = (player) => {

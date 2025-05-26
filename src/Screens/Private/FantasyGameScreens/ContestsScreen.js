@@ -27,16 +27,12 @@ import { setMatchesData, selectUpcomingMatches, setContestData } from '../../../
 
 const ContestCard = memo(({ contest, navigation }) => {
   const dispatch = useDispatch();
-  
   const handleContestPress = () => {
-    // Save contest data to Redux
     dispatch(setContestData({
       matchId: contest?.MatchId,
       contestDetails: contest?.contest_details || [],
       contestAllInfo: contest
     }));
-    
-    // Navigate to SelectContestsScreen
     navigation.navigate('SelectContestsScreen', { 
       contestDetails: contest?.contest_details || [],
       contestAllInfo: contest

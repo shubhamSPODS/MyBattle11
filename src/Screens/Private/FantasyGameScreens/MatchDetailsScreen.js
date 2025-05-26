@@ -240,10 +240,7 @@ const MatchDetailsScreen = ({ route }) => {
       />
 
       <TouchableOpacity style={styles.joinButton} onPress={() => {
-        navigation.navigate('CreateTeamScreen', {
-          matchObjectId: matchObjectId,
-           matchId:matchId,
-        })
+        navigation.navigate('TeamList')
       }}>
         <Typography fontFamily={BOLD} size={16} color={WHITE}>
           JOIN

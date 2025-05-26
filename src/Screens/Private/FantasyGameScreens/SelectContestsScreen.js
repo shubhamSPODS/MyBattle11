@@ -29,13 +29,13 @@ import { selectContestData } from '../../../Redux/Slice';
 const SelectContestsScreen = ({ route }) => {
   const navigation = useNavigation();
   const contestData = useSelector(selectContestData);
-    console.log(contestData,'==contestdata');
+  
     
   const renderContestItem = ({ item }) => (
     <>
       {item?.contest_info?.length > 0 ? <>
         <TouchableOpacity style={styles.contestCard} activeOpacity={0.9} onPress={()=>{
-          navigation.navigate('MyContest')
+          navigation.navigate('MyContest',{contestData:item})
         }}>
           <View style={styles.contestHeader}>
             <View style={styles.prizePoolContainer}>
