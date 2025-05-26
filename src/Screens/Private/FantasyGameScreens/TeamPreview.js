@@ -28,7 +28,7 @@ const TeamPreview = ({ navigation, route }) => {
         return (
             <View style={styles.playerContainer}>
                 <View style={styles.playerImageContainer}>
-                    <Icon source={WICKET_KEEPER} size={50} />
+                    <Icon source={WICKET_KEEPER} size={30} />
                     {isCaptain && (
                         <View style={[styles.roleTag, styles.captainTag]}>
                             <Typography size={10} color={WHITE} fontFamily={BOLD}>C</Typography>
@@ -47,7 +47,7 @@ const TeamPreview = ({ navigation, route }) => {
     const TeamSection = ({ title, data }) => (
         <View style={styles.sectionContainer}>
             <View style={styles.categoryTitleContainer}>
-                <Typography textAlign={'center'} size={15} color={BLACK} fontFamily={BOLD}>{title}</Typography>
+                <Typography textAlign={'center'} size={12} color={BLACK} fontFamily={BOLD}>{title}</Typography>
             </View>
             <FlatList
                 numColumns={3}
@@ -98,7 +98,9 @@ const TeamPreview = ({ navigation, route }) => {
                     </TouchableOpacity>
                     {!!selectedPlayers?.length == 0 ? <View style={{
                         width: FULL_WIDTH / 2.5, padding: 10, backgroundColor: 'rgba(0,0,0,0.5)',
-                        alignSelf: "center", marginTop: FULL_HEIGHT / 2.5, borderRadius: 5, alignItems: 'center', justifyContent: 'center'
+                        alignSelf: "center", marginTop: FULL_HEIGHT / 2.5, borderRadius: 5, alignItems: 'center',
+                         justifyContent: 'center',
+                        
                     }}>
                         <Typography color={WHITE} size={10}>No players selected yet.</Typography>
                         <TouchableOpacity onPress={() => { navigation.navigate('CreateTeamScreen') }} style={{
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         justifyContent: 'center',
         padding: 5,
-        marginVertical: 20
+        marginTop:25
     },
     categoryTitleContainer: {
         backgroundColor: WHITE,
@@ -154,62 +156,8 @@ const styles = StyleSheet.create({
         marginVertical: 5,
 
     },
-
-    playerImage: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-    },
-    teamLabel: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        paddingHorizontal: 4,
-        paddingVertical: 2,
-        borderRadius: 4,
-    },
-    statsContainer: {
-        marginTop: 4,
-        alignItems: 'center',
-    },
-    categoryContainer: {
-        width: '100%',
-        alignItems: 'center',
-        marginVertical: 10,
-    },
-    categoryTitle: {
-        color: WHITE,
-        fontSize: 16,
-        fontWeight: 'bold',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        borderRadius: 5,
-    },
-    playerName: {
-        color: WHITE,
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        paddingHorizontal: 10,
-        paddingVertical: 3,
-        borderRadius: 15,
-        fontSize: 12,
-        marginBottom: 2,
-    },
-    playerCost: {
-        color: WHITE,
-        fontSize: 10,
-        fontWeight: 'bold',
-    },
-    playerLabel: {
-        position: 'absolute',
-        top: -10,
-        right: 0,
-        color: 'yellow',
-        fontSize: 14,
-        fontWeight: 'bold',
-        zIndex: 1,
-    },
+   
+ 
     playerImageContainer: {
         position: 'relative',
     },
