@@ -229,7 +229,7 @@ const CreateTeamScreen = ({ navigation }) => {
         </Typography>
       </View>
 
-      <Typography
+      {/* <Typography
         style={{
           textAlign: 'center',
           marginBottom: 5,
@@ -237,7 +237,7 @@ const CreateTeamScreen = ({ navigation }) => {
         size={10}
         fontFamily={MEDIUM}>
         Max 7 player from a team
-      </Typography>
+      </Typography> */}
 
       <View
         style={{

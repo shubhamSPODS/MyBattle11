@@ -76,6 +76,8 @@ export const WICKET_KEEPER = require('../assets/Images/wicket_keeper.png')
 export const GROUND_GREEN = require('../assets/Images/groundGreen.png')
 export const UNCHECK_SQUARE = require('../assets/Images/square.png')
 export const CHECK_SQUARE = require('../assets/Images/squareCheck.png')
+export const CROSS = require('../assets/Images/cross.png')
+
 
 
 

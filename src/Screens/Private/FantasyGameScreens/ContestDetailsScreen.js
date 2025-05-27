@@ -28,8 +28,7 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 const ContestDetailsScreen = ({ route }) => {
     const navigation = useNavigation();
     const layout = useWindowDimensions();
-    const { contest_category_id, shadow_contest_id, contest_type, winning_amount } = route.params;
-
+    const { contest_type, winning_amount } = route.params;
     const [index, setIndex] = useState(0);
     const [routes] = useState([
         { key: 'winnings', title: 'Winnings' },
@@ -62,7 +61,6 @@ const ContestDetailsScreen = ({ route }) => {
         </View>
     );
 
-    // Tab content components
     const WinningsTab = () => (
         <View style={styles.winningsContainer}>
             <View style={styles.winningsHeader}>

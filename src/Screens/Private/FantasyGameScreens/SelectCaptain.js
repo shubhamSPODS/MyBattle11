@@ -93,16 +93,21 @@ const SelectCaptain = ({ route, navigation }) => {
     }
   
     const playerIds = selectedPlayers?.map(player => player.pid);
+    const matchId = contestData?.contestAllInfo?._id;
   
     try {
-      const storedCount = await AsyncStorage.getItem('team_count');
-      const teamCount = storedCount ? parseInt(storedCount) : 0;
+      // Get teams for this specific match
+      const storedTeams = await AsyncStorage.getItem(`teams_${matchId}`);
+      const teams = storedTeams ? JSON.parse(storedTeams) : [];
+      
+      // Get team count for this match
+      const teamCount = teams.length;
       const newCount = teamCount + 1;
   
       const teamName = `T${newCount}`;
   
       const body = {
-        match_id: contestData?.contestAllInfo?._id, 
+        match_id: matchId,
         pid: playerIds,
         name: teamName,
         matchid: JSON.stringify(contestData?.contestAllInfo?.MatchId),       
@@ -113,7 +118,16 @@ const SelectCaptain = ({ route, navigation }) => {
       const createTeam = await POST_WITH_TOKEN('match/create-team', body);
   
       if (createTeam?.success === true) {
-        await AsyncStorage.setItem('team_count', newCount.toString());
+        // Store the new team in the match-specific teams array
+        teams.push({
+          teamId: createTeam.data._id,
+          name: teamName,
+          timestamp: new Date().toISOString()
+        });
+        
+        // Save updated teams array back to AsyncStorage
+        await AsyncStorage.setItem(`teams_${matchId}`, JSON.stringify(teams));
+        
         Toast.show('Team created successfully');
       
         navigation.reset({

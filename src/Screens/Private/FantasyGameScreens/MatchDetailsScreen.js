@@ -40,6 +40,7 @@ const MatchDetailsScreen = ({ route }) => {
     JoinWithMULT,
     totalJoinedTeams,
     rankData,
+    item,
     contestDetails,
     matchObjectId } = route.params;
   const navigation = useNavigation();
@@ -47,7 +48,7 @@ const MatchDetailsScreen = ({ route }) => {
   // console.log(contestAllInfo?.TeamBlogo,'==blogo');
   const contestData = useSelector(selectContestData);
 
-   console.log(contestData,'===contestdaa');
+  //  console.log(contestData,'===contestdaa');
    
   const wsUrl = `wss://app.mybattle11.com/leader-board?limit=10&skip=0&matchid=${contestData?.contestAllInfo?.MatchId}&shadow_contest_id=${shadow_contest_id}&contest_category_id=${contest_category_id}&user_id=${user?._id}`;
 
@@ -236,11 +237,11 @@ const MatchDetailsScreen = ({ route }) => {
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
-        style={styles.tabView}
+        style={styles.tabView}x
       />
 
       <TouchableOpacity style={styles.joinButton} onPress={() => {
-        navigation.navigate('TeamList')
+        navigation.navigate('TeamList',{item:item,contestData:contestData, joinContestId :contestData?.contestAllInfo?._id,winningAmount:winningAmount})
       }}>
         <Typography fontFamily={BOLD} size={16} color={WHITE}>
           JOIN

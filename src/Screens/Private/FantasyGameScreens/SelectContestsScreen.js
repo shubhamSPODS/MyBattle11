@@ -108,6 +108,7 @@ const SelectContestsScreen = ({ route }) => {
                     contest_category_id: item?.contest_category_id,
                     shadow_contest_id: item?.shadow_contest_id,
                     rankData: item?.contest_info[0],
+                    item:item,
                   })
               }}
             />

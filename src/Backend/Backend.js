@@ -67,6 +67,7 @@ export const GET_WITH_TOKEN = async (endpoint) => {
 export const POST_WITH_TOKEN = async (endpoint, body) => {
   try {
     const token = await getToken();
+    
     const res = await fetch(`${BASE_URL}${endpoint}`, {
       method: 'POST',
       headers: {
