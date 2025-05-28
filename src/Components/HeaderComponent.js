@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform, StatusBar } from 'react-native';
 import Icon from './Icon';
-import { BACK, WALLET } from './ImageAsstes';
+import { BACK, LIST_ICON, PRIVACY, WALLET } from './ImageAsstes';
 import Typography from './Typography';
 import { BLACK, WHITE } from './Colors';
 import { BOLD, SEMI_BOLD } from './AppFonts';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const HeaderComponent = ({ title, onWalletPress, walletIcon, style }) => {
+const HeaderComponent = ({ title, onWalletPress, walletIcon, style, listIcon,listIconPress }) => {
   const navigation = useNavigation()
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -19,7 +19,7 @@ const HeaderComponent = ({ title, onWalletPress, walletIcon, style }) => {
       />
       <View style={[styles.container, { ...style }]}>
         <View style={styles.side}>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => {
               navigation.goBack()
             }}
@@ -33,11 +33,20 @@ const HeaderComponent = ({ title, onWalletPress, walletIcon, style }) => {
 
         <View style={styles.side}>
           {walletIcon && (
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={onWalletPress}
               style={styles.walletButton}
             >
               <Icon source={WALLET} resizeMode='contain' size={40} color="#000" />
+            </TouchableOpacity>
+          )}
+
+          {listIcon && (
+            <TouchableOpacity
+              onPress={listIconPress}
+              style={styles.walletButton}
+            >
+              <Icon source={LIST_ICON} resizeMode='contain' size={35} color="#000" />
             </TouchableOpacity>
           )}
         </View>
@@ -55,7 +64,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: Platform.OS === 'android' ? 10: 10,
+    paddingTop: Platform.OS === 'android' ? 10 : 10,
     paddingBottom: 10,
     paddingHorizontal: 16,
     backgroundColor: WHITE,

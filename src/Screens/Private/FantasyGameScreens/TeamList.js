@@ -155,6 +155,7 @@ const TeamList = ({ route }) => {
                 return
             }
             const selectedTeamId = selectedTeams?.map(index => teamData[index]?._id);
+          
             const arofobj = selectedTeamId.map((teamId, index) => ({
                 match_id: contestDataStore?.contestAllInfo?._id,
                 matchid: contestDataStore?.matchId,
@@ -166,14 +167,22 @@ const TeamList = ({ route }) => {
                 method: 'wallet',
                 amount: item?.contest_info?.[0]?.EnteryFee || 0
             }));
-
             const data = {
-                mutiple: selectedTeams.length > 1,
-                arofobj: arofobj
+                arofobj: arofobj,
+                mutiple: selectedTeams?.length > 1
             };
-            
+            // const data = {
+            //     // mutiple: selectedTeams.length > 1,
+            //     // arofobj: arofobj
+            //     match_id: contestDataStore?.contestAllInfo?._id,
+            //     matchid:contestDataStore?.matchId,
+            //     teams_id:[teamId?.toString()],
+            //     method: 'wallet',
+            //     amount: item?.contest_info?.[0]?.EnteryFee || 0,
+            //     teamName:  teamData[selectedTeams[index]]?.name
+            // };
             console.log(data,'==data>>>>>>>');
-            const response = await POST_WITH_TOKEN('/match/join-contest', data);
+            const response = await POST_WITH_TOKEN('match/join-contest', data);
             console.log(response, '====response');
         } catch (error) {
             console.log(error, '====error');

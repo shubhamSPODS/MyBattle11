@@ -186,7 +186,7 @@ const ContestsScreen = () => {
         </View>
         <TouchableOpacity 
           style={styles.scoreboardButton}
-          onPress={() => navigation.navigate('ScoreboardScreen')}
+          onPress={() => navigation.navigate('CreateScoreBoard')}
         >
           <Typography color={WHITE} fontFamily={BOLD} size={10}>
             Scoreboard

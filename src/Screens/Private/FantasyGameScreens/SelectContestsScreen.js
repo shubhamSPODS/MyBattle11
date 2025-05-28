@@ -138,8 +138,8 @@ const SelectContestsScreen = ({ route }) => {
           <Typography style={styles.btnText}>Create Team</Typography>
         </TouchableOpacity>
         <TouchableOpacity style={styles.selectBtn} onPress={() => {
-          onSelectCaptain()
-        }}>
+
+}}>
           <Typography style={[styles.btnText, { color: '#fff' }]}>Scordeboard</Typography>
         </TouchableOpacity>
       </View>

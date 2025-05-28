@@ -26,6 +26,8 @@ import SelectCaptain from '../Screens/Private/FantasyGameScreens/SelectCaptain';
 import MyContest from '../Screens/Private/FantasyGameScreens/MyContest';
 import TeamPreview from '../Screens/Private/FantasyGameScreens/TeamPreview';
 import TeamList from '../Screens/Private/FantasyGameScreens/TeamList';
+import CreateScoreBoard from '../Screens/Private/FantasyGameScreens/CreateScoreBoard';
+import ScoreboardList from '../Screens/Private/FantasyGameScreens/ScoreboardList';
 
 
 
@@ -81,7 +83,11 @@ export const HomeStack = () => {
             <Stack.Screen name='MyContest' component={MyContest} />
             <Stack.Screen name='TeamPreview' component={TeamPreview} />
             <Stack.Screen name='TeamList' component={TeamList} />
+            <Stack.Screen name='CreateScoreBoard' component={CreateScoreBoard} />
+            <Stack.Screen name='ScoreboardList' component={ScoreboardList} />
 
+
+            
 
 
 
