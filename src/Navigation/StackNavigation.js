@@ -34,6 +34,7 @@ import ScoreboardList from '../Screens/Private/FantasyGameScreens/ScoreboardList
 export const MainNavigation = () => {
     const userToken = useSelector(store => store.auth.token)
     
+    
     return (
         <>
             {userToken ? <HomeStack /> : <AuthStack />

@@ -1,66 +1,84 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { EMAIL, STATIC_USER, USER_IMG } from '../../../Components/ImageAsstes';
 import HeaderComponent from '../../../Components/HeaderComponent';
 import { DARK_RED, WHITE } from '../../../Components/Colors';
 import Typography, { FULL_WIDTH } from '../../../Components/Typography';
 import { MEDIUM, SEMI_BOLD } from '../../../Components/AppFonts';
-
-const scoreboardData = [
-    {
-        id: '1',
-        team: 'INDIA',
-        flag: STATIC_USER,
-        scores: [
-            { over: 1, run: 12 },
-            { over: 2, run: 14 },
-            { over: 3, run: 8 },
-            { over: 2, run: 9 },
-            { over: 3, run: 12 },
-        ],
-    },
-    {
-        id: '2',
-        team: 'PAKISTAN',
-        flag: USER_IMG,
-        scores: [
-            { over: 1, run: 12 },
-            { over: 2, run: 14 },
-            { over: 3, run: 8 },
-            { over: 2, run: 9 },
-            { over: 3, run: 12 },
-        ],
-    },
-];
+import Toast from 'react-native-simple-toast';
+import { GET_WITH_TOKEN } from '../../../Backend/Backend';
+import { useSelector } from 'react-redux';
+import { selectContestData } from '../../../Redux/Slice';
 
 const ScoreboardList = ({navigation}) => {
-    const renderScoreboard = ({ item }) => (
-        <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={()=>{
-            navigation.navigate('ScoreboardScreen')
-        }}>
-            <View style={styles.header}>
-                <View style={styles.teamInfo}>
-                    <Image source={item.flag} style={styles.flag} />
-                    <Typography style={styles.teamName}>{item.team}</Typography>
-                </View>
-                <TouchableOpacity style={styles.editButton}>
-                    <Typography style={styles.editTypography}>Edit</Typography>
-                </TouchableOpacity>
-            </View>
+    const [scoreboardData, setScoreboardData] = useState([]);
+    const contestData = useSelector(selectContestData);
+    const matchId = contestData?.contestAllInfo?._id;
 
-            <View style={styles.tableHeader}>
-                <Typography style={styles.tableTypographyBold}>OVER</Typography>
-                <Typography style={styles.tableTypographyBold}>Run</Typography>
-            </View>
+    const getScoreboards = async () => {
+        try {
+            const response = await GET_WITH_TOKEN(`match/userScoreCard/${matchId}`);
+            console.log(response?.success, '==response scoreboard===');
+       
+            if (response?.success === true) {
+                setScoreboardData(response?.data);
 
-            {item.scores.map((score, index) => (
-                <View style={styles.tableRow} key={index}>
-                    <Typography style={styles.tableTypography}>{score.over}</Typography>
-                    <Typography style={styles.tableTypography}>{score.run}</Typography>
+            } else {
+                Toast.show(response?.message || 'Failed to fetch scoreboard');
+            }
+        } catch (error) {
+            console.error('Error fetching scoreboard:', error);
+            Toast.show('Error fetching scoreboard');
+        }
+    }
+
+    useEffect(() => {
+        getScoreboards();
+    }, []);
+
+    const renderScoreboard = ({ item }) => {
+        // Get only first 5 predictions
+        const firstFivePredictions = item.predictions.slice(0, 5);
+        
+        return (
+            <TouchableOpacity 
+                style={styles.card} 
+                activeOpacity={0.9} 
+                onPress={() => {
+                    navigation.navigate('ScoreboardScreen', { 
+                        scoreboardData: item,
+                        allPredictions: item.predictions 
+                    });
+                }}
+            >
+                <View style={styles.header}>
+                    <View style={styles.teamInfo}>
+                        <Typography style={styles.teamName}>User Scorecard</Typography>
+                    </View>
+                    <View style={styles.statsContainer}>
+                        <Typography style={styles.statsText}>Accuracy: {item?.accuracy_percentage}%</Typography>
+                        <Typography style={styles.statsText}>Exact Matches: {item.total_exact_matches}</Typography>
+                    </View>
                 </View>
-            ))}
-        </TouchableOpacity>
-    );
+
+                <View style={styles.tableHeader}>
+                    <Typography style={styles.tableTypographyBold}>OVER</Typography>
+                    <Typography style={styles.tableTypographyBold}>RUNS</Typography>
+                </View>
+
+                {firstFivePredictions.map((prediction, index) => (
+                    <View style={styles.tableRow} key={index}>
+                        <Typography style={styles.tableTypography}>{prediction.over_number}</Typography>
+                        <Typography style={styles.tableTypography}>{prediction.runs}</Typography>
+                    </View>
+                ))}
+
+                <View style={styles.viewMoreContainer}>
+                    <Typography style={styles.viewMoreText}>View All Overs →</Typography>
+                </View>
+            </TouchableOpacity>
+        );
+    };
 
     return (
         <View style={styles.container}>
@@ -68,7 +86,7 @@ const ScoreboardList = ({navigation}) => {
             <FlatList
                 data={scoreboardData}
                 renderItem={renderScoreboard}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item._id}
                 contentContainerStyle={{ paddingBottom: 20 }}
             />
         </View>
@@ -99,29 +117,24 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        marginBottom: 12,
     },
     teamInfo: {
         flexDirection: 'row',
         alignItems: 'center',
     },
-    flag: {
-        width: 24,
-        height: 16,
-        resizeMode: 'contain',
-        marginRight: 8,
-    },
     teamName: {
-        fontFamily: SEMI_BOLD
+        fontFamily: SEMI_BOLD,
+        fontSize: 16,
     },
-    editButton: {
-        backgroundColor: DARK_RED,
-        borderRadius: 6,
-        paddingVertical: 4,
-        paddingHorizontal: 12,
+    statsContainer: {
+        alignItems: 'flex-end',
     },
-    editTypography: {
-        color: WHITE,
-        fontFamily: MEDIUM
+    statsText: {
+        fontFamily: MEDIUM,
+        fontSize: 12,
+        color: DARK_RED,
+        marginBottom: 4,
     },
     tableHeader: {
         flexDirection: 'row',
@@ -144,5 +157,17 @@ const styles = StyleSheet.create({
     },
     tableTypography: {
         fontSize: 12,
+    },
+    viewMoreContainer: {
+        marginTop: 12,
+        alignItems: 'center',
+        borderTopWidth: 1,
+        borderTopColor: '#eee',
+        paddingTop: 8,
+    },
+    viewMoreText: {
+        color: DARK_RED,
+        fontFamily: MEDIUM,
+        fontSize: 14,
     },
 });

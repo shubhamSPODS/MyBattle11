@@ -29,7 +29,7 @@ import { selectContestData } from '../../../Redux/Slice';
 const SelectContestsScreen = ({ route }) => {
   const navigation = useNavigation();
   const contestData = useSelector(selectContestData);
-  
+   
     
   const renderContestItem = ({ item }) => (
     <>
@@ -138,6 +138,8 @@ const SelectContestsScreen = ({ route }) => {
           <Typography style={styles.btnText}>Create Team</Typography>
         </TouchableOpacity>
         <TouchableOpacity style={styles.selectBtn} onPress={() => {
+          navigation.navigate('CreateScoreBoard')
+
 
 }}>
           <Typography style={[styles.btnText, { color: '#fff' }]}>Scordeboard</Typography>

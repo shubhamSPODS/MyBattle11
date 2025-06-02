@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Typography from '../../../Components/Typography';
 import Icon from '../../../Components/Icon';
 import { BOLD, MEDIUM, REGULAR } from '../../../Components/AppFonts';
@@ -16,42 +16,15 @@ import HeaderComponent from '../../../Components/HeaderComponent';
 
 const ScoreboardScreen = () => {
   const navigation = useNavigation();
-
-  // Mock data for the scoreboard based on the image
-  const scoreData = [
-    { Over: 'Over 1', scoreboard: 1, runs: 14, points: 156 },
-    { Over: 'Over 2', scoreboard: 2, runs: 14, points: 142 },
-    { Over: 'Over 3', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 4', scoreboard: 1, runs: 14, points: 156 },
-    { Over: 'Over 5', scoreboard: 2, runs: 14, points: 142 },
-    { Over: 'Over 6', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 7', scoreboard: 1, runs: 14, points: 156 },
-    { Over: 'Over 8', scoreboard: 2, runs: 14, points: 142 },
-    { Over: 'Over 9', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 10', scoreboard: 1, runs: 14, points: 156 },
-    { Over: 'Over 11', scoreboard: 2, runs: 14, points: 142 },
-    { Over: 'Over 12', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 10', scoreboard: 1, runs: 14, points: 156 },
-    { Over: 'Over 11', scoreboard: 2, runs: 14, points: 142 },
-    { Over: 'Over 12', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 13', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 14', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 15', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 16', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 17', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 18', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 19', scoreboard: 3, runs: 9, points: 128 },
-    { Over: 'Over 20', scoreboard: 3, runs: 9, points: 128 },
-
-
-  ];
+  const route = useRoute();
+  const { scoreboardData, allPredictions } = route.params;
 
   // Render table header
   const renderHeader = () => (
     <View style={styles.tableHeader}>
       <Typography color={WHITE} fontFamily={BOLD} size={14} style={styles.headerText}>Over</Typography>
-      <Typography color={WHITE} fontFamily={BOLD} size={14} style={styles.headerText}>scoreboard</Typography>
-      <Typography color={WHITE} fontFamily={BOLD} size={14} style={styles.headerText}>Runs</Typography>
+      <Typography color={WHITE} fontFamily={BOLD} size={14} style={styles.headerText}>Predicted Runs</Typography>
+      <Typography color={WHITE} fontFamily={BOLD} size={14} style={styles.headerText}>Actual Runs</Typography>
       <Typography color={WHITE} fontFamily={BOLD} size={14} style={styles.headerText}>Points</Typography>
     </View>
   );
@@ -62,10 +35,14 @@ const ScoreboardScreen = () => {
       styles.tableRow, 
       { backgroundColor: index % 2 === 0 ? WHITE : '#aa050a5c' }
     ]}>
-      <Typography fontFamily={MEDIUM} size={14} style={styles.rowText}>{item.Over}</Typography>
-      <Typography fontFamily={MEDIUM} size={14} style={styles.rowText}>{item.scoreboard}</Typography>
+      <Typography fontFamily={MEDIUM} size={14} style={styles.rowText}>Over {item.over_number}</Typography>
       <Typography fontFamily={MEDIUM} size={14} style={styles.rowText}>{item.runs}</Typography>
-      <Typography fontFamily={MEDIUM} size={14} style={styles.rowText}>{item.points}</Typography>
+      <Typography fontFamily={MEDIUM} size={14} style={styles.rowText}>
+        {scoreboardData.actual_score[index]?.runs || '-'}
+      </Typography>
+      <Typography fontFamily={MEDIUM} size={14} style={styles.rowText}>
+        {scoreboardData.actual_score[index]?.points || '-'}
+      </Typography>
     </View>
   );
 
@@ -75,11 +52,21 @@ const ScoreboardScreen = () => {
         navigation.navigate('ContestDetailsScreen')
       }}/>
       
+      <View style={styles.statsContainer}>
+        <View style={styles.statItem}>
+          <Typography style={styles.statLabel}>Accuracy</Typography>
+          <Typography style={styles.statValue}>{scoreboardData.accuracy_percentage}%</Typography>
+        </View>
+        <View style={styles.statItem}>
+          <Typography style={styles.statLabel}>Exact Matches</Typography>
+          <Typography style={styles.statValue}>{scoreboardData.total_exact_matches}</Typography>
+        </View>
+      </View>
 
       <View style={styles.tableContainer}>
         {renderHeader()}
         <FlatList
-          data={scoreData}
+          data={allPredictions}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
@@ -94,13 +81,38 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
- 
- 
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 16,
+    backgroundColor: WHITE,
+    margin: 10,
+    borderRadius: 8,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statLabel: {
+    fontFamily: MEDIUM,
+    fontSize: 12,
+    color: GREY,
+    marginBottom: 4,
+  },
+  statValue: {
+    fontFamily: BOLD,
+    fontSize: 18,
+    color: BLACK,
+  },
   tableContainer: {
     margin: 10,
     backgroundColor: WHITE,
     borderRadius: 5,
-    Overflow: 'hidden',
+    overflow: 'hidden',
     flex: 1,
   },
   tableHeader: {
