@@ -12,7 +12,7 @@ import Toast from 'react-native-simple-toast';
 import { useSelector } from 'react-redux'
 import EmptyList from '../../../Components/EmptyList'
 
-const TeamList = ({ route }) => {
+const TeamList = ({ route ,navigation}) => {
     const { joinContestId,  item } = route?.params
     const [teamData, setteamData] = useState([])
     const [selectedTeams, setSelectedTeams] = useState([]);
@@ -24,7 +24,7 @@ const TeamList = ({ route }) => {
     const slideAnim = useRef(new Animated.Value(0)).current;
   const contestDataStore = useSelector(selectContestData);
   const userData = useSelector(store=>store.auth.user);
-//   console.log(userData,'==data user ka ');
+  console.log(userData,'==data user ka ');
   
     const handleSelectAll = () => {
         if (isSelectAll) {
@@ -149,7 +149,7 @@ const TeamList = ({ route }) => {
             setShowPlayerSheet(false);
         });
     };
-    console.log(selectedTeams,'==teams');
+    // console.log(selectedTeams,'==teams');
     
     const onJoinContest = async () => {
         try {
@@ -169,13 +169,24 @@ const TeamList = ({ route }) => {
             };
 
             console.log('Request Data:', data);
-            const response = await POST_WITH_TOKEN('match/contest-join', data);
-            console.log('Raw Response:', response);
             
-            if (response?.success === true) {
-                Toast.show(response?.message || 'Successfully joined contest');
+            const response = await fetch('https://app.mybattle11.com/v2/match/contest-join', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userData?.accessToken}` 
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            console.log('Raw Response:', result);
+            
+            if (result?.success === true) {
+                Toast.show(result?.message || 'Successfully joined contest');
+                navigation.navigate('SelectContestsScreen')
             } else {
-                Toast.show(response?.message || 'Failed to join contest');
+                Toast.show(result?.message || 'Failed to join contest');
             }
         } catch (error) {
             console.log('Error details:', {

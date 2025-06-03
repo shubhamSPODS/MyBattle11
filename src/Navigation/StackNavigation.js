@@ -33,7 +33,8 @@ import ScoreboardList from '../Screens/Private/FantasyGameScreens/ScoreboardList
 
 export const MainNavigation = () => {
     const userToken = useSelector(store => store.auth.token)
-    
+    //   console.log(userToken,'==tokrn se');
+      
     
     return (
         <>
