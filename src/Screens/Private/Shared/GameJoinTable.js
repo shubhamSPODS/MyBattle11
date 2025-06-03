@@ -22,14 +22,12 @@ const GameJoinTable = ({ route, navigation }) => {
     const routeData = route?.params?.playerDetails;
     const gameRoute = route?.params?.gameType;
     const isRummy = gameRoute === 'Rummy';
-    console.log(gameRoute, '===rummy');
-
     const [isSocketConnected, setIsSocketConnected] = useState(false);
     const [players, setPlayers] = useState([]);
     const [isJoining, setIsJoining] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isWaitingForUnity, setIsWaitingForUnity] = useState(false);
-    const [countdown, setCountdown] = useState(10);
+    const [countdown, setCountdown] = useState(4);
 
     const themeColor = isRummy ? DARK_PURPLE : GOLDEN;
     const gameIcon = isRummy ? POOL : DICE;
@@ -57,7 +55,7 @@ const GameJoinTable = ({ route, navigation }) => {
 
             return () => clearInterval(timer);
         } else {
-            setCountdown(10);
+            setCountdown(4);
         }
     }, [isWaitingForUnity]);
 

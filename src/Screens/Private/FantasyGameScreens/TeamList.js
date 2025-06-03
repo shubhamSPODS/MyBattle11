@@ -23,6 +23,9 @@ const TeamList = ({ route }) => {
     const [currentSheetViceCaptain, setCurrentSheetViceCaptain] = useState(null);
     const slideAnim = useRef(new Animated.Value(0)).current;
   const contestDataStore = useSelector(selectContestData);
+  const userData = useSelector(store=>store.auth.user);
+//   console.log(userData,'==data user ka ');
+  
     const handleSelectAll = () => {
         if (isSelectAll) {
             setSelectedTeams([]);
@@ -156,36 +159,31 @@ const TeamList = ({ route }) => {
             }
             const selectedTeamId = selectedTeams?.map(index => teamData[index]?._id);
           
-            const arofobj = selectedTeamId.map((teamId, index) => ({
+            const data = {
                 match_id: contestDataStore?.contestAllInfo?._id,
                 matchid: contestDataStore?.matchId,
                 contest_category_id: item?.contest_category_id?.toString(),
-                shadow_contest_id: item?.shadow_contest_id?.toString(),
                 match_contest_category_id: contestDataStore?.contestDetails?._id,
-                teams_id: [teamId?.toString()],
-                teamName: teamData[selectedTeams[index]]?.name,
-                method: 'wallet',
-                amount: item?.contest_info?.[0]?.EnteryFee || 0
-            }));
-            const data = {
-                arofobj: arofobj,
-                mutiple: selectedTeams?.length > 1
+                teams_id: selectedTeamId.map(id => id?.toString()),
+                user_id: userData?._id
             };
-            // const data = {
-            //     // mutiple: selectedTeams.length > 1,
-            //     // arofobj: arofobj
-            //     match_id: contestDataStore?.contestAllInfo?._id,
-            //     matchid:contestDataStore?.matchId,
-            //     teams_id:[teamId?.toString()],
-            //     method: 'wallet',
-            //     amount: item?.contest_info?.[0]?.EnteryFee || 0,
-            //     teamName:  teamData[selectedTeams[index]]?.name
-            // };
-            console.log(data,'==data>>>>>>>');
-            const response = await POST_WITH_TOKEN('match/join-contest', data);
-            console.log(response, '====response');
+
+            console.log('Request Data:', data);
+            const response = await POST_WITH_TOKEN('match/contest-join', data);
+            console.log('Raw Response:', response);
+            
+            if (response?.success === true) {
+                Toast.show(response?.message || 'Successfully joined contest');
+            } else {
+                Toast.show(response?.message || 'Failed to join contest');
+            }
         } catch (error) {
-            console.log(error, '====error');
+            console.log('Error details:', {
+                message: error.message,
+                stack: error.stack,
+                response: error.response
+            });
+            Toast.show('Something went wrong. Please try again.');
         }
     }
     return (
